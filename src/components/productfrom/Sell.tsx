@@ -15,49 +15,12 @@ const Selladd: React.FC = () => {
 
   const [isScanning, setIsScanning] = useState(false);
   const [isManualEntry, setIsManualEntry] = useState(false);
-  const [scanBuffer, setScanBuffer] = useState("");
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const scanTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
   const skuInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (isManualEntry) return;
-
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!isScanning && document.activeElement !== skuInputRef.current) {
-        return;
-      }
-
-      if (!isScanning) {
-        setIsScanning(true);
-        setScanBuffer("");
-      }
-
-      if (scanTimeoutRef.current) {
-        clearTimeout(scanTimeoutRef.current);
-      }
-
-      if (e.key.length === 1 || e.key === "Enter") {
-        setScanBuffer(prev => prev + e.key);
-      }
-
-      scanTimeoutRef.current = setTimeout(() => {
-        if (scanBuffer) {
-          processScanComplete(scanBuffer.replace("Enter", ""));
-        }
-        setIsScanning(false);
-        setScanBuffer("");
-      }, 100);
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-      if (scanTimeoutRef.current) {
-        clearTimeout(scanTimeoutRef.current);
-      }
-    };
-  }, [isScanning, scanBuffer, isManualEntry]);
+  
 
   const toggleEntryMode = () => {
     setIsManualEntry(!isManualEntry);
