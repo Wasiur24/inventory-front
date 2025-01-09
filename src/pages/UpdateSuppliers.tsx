@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import SupplierService from '../services/supplier.service';
+import SupplierService from '../services/Supplier.service';
 
 export default function UpdateSupplier() {
     const navigate = useNavigate();
