@@ -1,4 +1,4 @@
-import api from './api';
+import apiClient from './api';
 
 export interface Category {
   _id?: string;
@@ -11,7 +11,7 @@ export interface Category {
 // Create a new category
 export const createCategory = async (category: Category) => {
   try {
-    const response = await api.post('/category', category);
+    const response = await apiClient.post('/category', category);
     return response.data;
   } catch (error) {
     console.error('Error creating category:', error);
@@ -22,7 +22,7 @@ export const createCategory = async (category: Category) => {
 // Fetch all categories
 export const getAllCategories = async () => {
   try {
-    const response = await api.get('/category');
+    const response = await apiClient.get('/category');
     return response.data.categories;
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -33,7 +33,7 @@ export const getAllCategories = async () => {
 // Update a category by ID
 export const updateCategory = async (id: string, category: Category) => {
   try {
-    const response = await api.put(`/category/${id}`, category);
+    const response = await apiClient.put(`/category/${id}`, category);
     return response.data;
   } catch (error) {
     console.error('Error updating category:', error);
@@ -44,7 +44,7 @@ export const updateCategory = async (id: string, category: Category) => {
 // Delete a category by ID
 export const deleteCategory = async (id: string) => {
   try {
-    const response = await api.delete(`/category/${id}`);
+    const response = await apiClient.delete(`/category/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error deleting category:', error);
