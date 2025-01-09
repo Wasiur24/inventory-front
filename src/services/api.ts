@@ -8,11 +8,11 @@
 
 import axios, { AxiosInstance } from 'axios';
 
-const API_BASE_URL: string = import.meta.env.VITE_BASE_URL || 'https://billingposbackend.vercel.app/api/v1';
+const API_BASE_URL: string = import.meta.env.VITE_BASE_URL || 'https://billingpos-backend.onrender.com/api/v1';
 
 
 const api: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL || 'https://billingposbackend.vercel.app',
+  baseURL: API_BASE_URL || 'https://billingpos-backend.onrender.com',
 });
 
 // Add token to requests
