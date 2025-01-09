@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import ProductService from "../../services/Product.service";
 import { getAllCategories } from "../../services/Category.service";
-import SupplierService from '../../services/Supplier.service';
-import { Printer, Barcode, PenLine, Plus, Trash2 } from 'lucide-react';
+import SupplierService from "../../services/Supplier.service";
+import { Printer, Barcode, PenLine, Plus, Trash2 } from "lucide-react";
+import Template from "./Template";
+import { useReactToPrint } from "react-to-print";
 
 type Product = {
   name: string;
@@ -23,11 +25,12 @@ const AddProduct: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([createEmptyProduct()]);
   const [categories, setCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [suppliers, setSuppliers] = useState<{ id: string; name: string; email: string }[]>([]);
-
+  const [suppliers, setSuppliers] = useState<
+    { id: string; name: string; email: string }[]
+  >([]);
+  const [productsData, setProductsData] = useState<any>([]);
+  const templateRef = useRef(null);
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
-
-
 
   function createEmptyProduct(): Product {
     return {
@@ -46,15 +49,13 @@ const AddProduct: React.FC = () => {
     };
   }
 
-  
-
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
         const data = await SupplierService.getAllSuppliers();
         setSuppliers(data);
       } catch (error) {
-        console.error('Failed to fetch suppliers:', error);
+        console.error("Failed to fetch suppliers:", error);
       }
     };
 
@@ -71,41 +72,52 @@ const AddProduct: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const printReceipt = async (product: any) => {
+  const handlePrint = useReactToPrint({
+    contentRef: templateRef,
+  });
+
+  const printReceipt = async (products: any) => {
     try {
-      const device = await navigator.usb.requestDevice({
-        filters: [{ vendorId: 0x0483 }]
-      });
+      // const device = await navigator.usb.requestDevice({
+      //   filters: [{ vendorId: 0x0483 }],
+      // });
 
-      await device.open();
-      await device.selectConfiguration(1);
-      await device.claimInterface(0);
+      setProductsData(products);
+      // setTimeout(() => {
+      setTimeout(() => {
+        handlePrint();
+      }, 2000);
 
-      const receiptData = [
-        '\x1B\x40', // Initialize printer
-        '\x1B\x61\x01', // Center alignment
-        'Product Added Successfully\n', // Message
-        '-'.repeat(32) + '\n', // Divider line
-        `SKU: ${product.sku}\n`, // SKU information
-        `Name: ${product.name}\n`, // Name information
-        `Category: ${product.category}\n`, // Category information
-        '-'.repeat(32) + '\n', // Divider line
-        '\x1D\x68\x80', // Barcode height
-        '\x1D\x77\x08', // Barcode width
-        '\x1D\x6B\x49\x0C', // Barcode format
-        `${product.sku}`, // Barcode data
-        '\x00', // Null terminator for barcode
-        '\n\n\n\n', // Line feeds for spacing
-        '\x1D\x56\x41', // Cut paper
-      ].join(''); // Combine all parts into a single string
-      
+      // setProductsData([]);
+      // }, 5000);
+      // await device.open();
+      // await device.selectConfiguration(1);
+      // await device.claimInterface(0);
 
-      const encoder = new TextEncoder();
-      const data = encoder.encode(receiptData);
-      await device.transferOut(1, data);
+      // const receiptData = [
+      //   "\x1B\x40", // Initialize printer
+      //   "\x1B\x61\x01", // Center alignment
+      //   "Product Added Successfully\n", // Message
+      //   "-".repeat(32) + "\n", // Divider line
+      //   `SKU: ${product.sku}\n`, // SKU information
+      //   `Name: ${product.name}\n`, // Name information
+      //   `Category: ${product.category}\n`, // Category information
+      //   "-".repeat(32) + "\n", // Divider line
+      //   "\x1D\x68\x80", // Barcode height
+      //   "\x1D\x77\x08", // Barcode width
+      //   "\x1D\x6B\x49\x0C", // Barcode format
+      //   `${product.sku}`, // Barcode data
+      //   "\x00", // Null terminator for barcode
+      //   "\n\n\n\n", // Line feeds for spacing
+      //   "\x1D\x56\x41", // Cut paper
+      // ].join(""); // Combine all parts into a single string
+
+      // const encoder = new TextEncoder();
+      // const data = encoder.encode(receiptData);
+      // await device.transferOut(1, data);
     } catch (error) {
-      console.error('Error printing receipt:', error);
-      alert('Failed to print receipt. Please check printer connection.');
+      console.error("Error printing receipt:", error);
+      alert("Failed to print receipt. Please check printer connection.");
     }
   };
 
@@ -116,7 +128,7 @@ const AddProduct: React.FC = () => {
   //   const { name, value } = e.target;
   //   const updatedProducts = [...products];
   //   if (name === "sku") return;
-    
+
   //   updatedProducts[index] = {
   //     ...updatedProducts[index],
   //     [name]: name.includes("Date") ? value : parseValue(value, name)
@@ -129,19 +141,19 @@ const AddProduct: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     const updatedProducts = [...products];
-    
+
     updatedProducts[index] = {
       ...updatedProducts[index],
       [name]: name.includes("Date") ? value : parseValue(value, name),
     };
-  
+
     setProducts(updatedProducts);
   };
-  
+
   const parseValue = (value: string, name: string): string | number => {
     if (
       // name === "price" ||
-    
+
       name === "purchasePrice" ||
       name === "sellingPrice" ||
       name === "quantity" ||
@@ -163,7 +175,7 @@ const AddProduct: React.FC = () => {
 
   const validateProducts = (): boolean => {
     for (const product of products) {
-      if ( product.purchasePrice <= 0 || product.sellingPrice <= 0) {
+      if (product.purchasePrice <= 0 || product.sellingPrice <= 0) {
         alert("Price values must be greater than zero.");
         return false;
       }
@@ -171,8 +183,11 @@ const AddProduct: React.FC = () => {
         alert("Quantity cannot be negative.");
         return false;
       }
-      if (product.manufacturingDate && product.expiryDate && 
-          new Date(product.manufacturingDate) >= new Date(product.expiryDate)) {
+      if (
+        product.manufacturingDate &&
+        product.expiryDate &&
+        new Date(product.manufacturingDate) >= new Date(product.expiryDate)
+      ) {
         alert("Manufacturing date must be earlier than expiry date.");
         return false;
       }
@@ -183,15 +198,19 @@ const AddProduct: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateProducts()) return;
-  
+
     setIsLoading(true);
     try {
       const response = await ProductService.addProduct(products);
-      
-      for (const product of response.products) {
-        await printReceipt(product);
-      }
-      
+
+      // for (const product of response.products) {
+      //   await printReceipt(product);
+      // }
+
+      console.log(response.products);
+
+      printReceipt(response.products);
+
       alert("Products added successfully!");
       setProducts([createEmptyProduct()]);
     } catch (error) {
@@ -210,26 +229,27 @@ const AddProduct: React.FC = () => {
           <div key={index} className="border border-gray-300 p-4 rounded-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-medium text-lg">Product {index + 1}</h2>
-         
             </div>
 
             <div className="mb-4">
-  <label className="block text-sm font-medium text-gray-700">SKU (Optional if not have)</label>
-  <input
-    type="text"
-    name="sku"
-    value={products[index]?.sku || ""}
-    onChange={(e) => handleChange(index, e)}
-    className="border border-gray-300 rounded-md p-2 w-full"
-    placeholder="Enter SKU value"
-  />
-</div>
-
-
+              <label className="block text-sm font-medium text-gray-700">
+                SKU (Optional if not have)
+              </label>
+              <input
+                type="text"
+                name="sku"
+                value={products[index]?.sku || ""}
+                onChange={(e) => handleChange(index, e)}
+                className="border border-gray-300 rounded-md p-2 w-full"
+                placeholder="Enter SKU value"
+              />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Product Name</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Product Name
+                </label>
                 <input
                   name="name"
                   value={product.name}
@@ -240,7 +260,9 @@ const AddProduct: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Category
+                </label>
                 <select
                   name="category"
                   value={product.category}
@@ -258,7 +280,9 @@ const AddProduct: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Supplier</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Supplier
+                </label>
                 <select
                   name="email"
                   value={product.email}
@@ -276,7 +300,9 @@ const AddProduct: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Description
+                </label>
                 <input
                   name="description"
                   value={product.description}
@@ -299,7 +325,9 @@ const AddProduct: React.FC = () => {
               </div> */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Purchase Price</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Purchase Price
+                </label>
                 <input
                   name="purchasePrice"
                   type="number"
@@ -311,7 +339,9 @@ const AddProduct: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Selling Price</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Selling Price
+                </label>
                 <input
                   name="sellingPrice"
                   type="number"
@@ -323,7 +353,9 @@ const AddProduct: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Quantity
+                </label>
                 <input
                   name="quantity"
                   type="number"
@@ -335,7 +367,9 @@ const AddProduct: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Weight (kg)</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Weight (kg)
+                </label>
                 <input
                   name="weight"
                   type="number"
@@ -345,7 +379,7 @@ const AddProduct: React.FC = () => {
                   step="0.01"
                   min="0"
                 />
-              </div> 
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -373,8 +407,6 @@ const AddProduct: React.FC = () => {
                   className="border border-gray-300 rounded-md p-2 w-full"
                 />
               </div>
-
-             
             </div>
 
             {products.length > 1 && (
@@ -410,6 +442,9 @@ const AddProduct: React.FC = () => {
           </button>
         </div>
       </form>
+      {/* <div className="hidden"> */}
+      <Template componentref={templateRef} products={productsData} />
+      {/* </div> */}
     </div>
   );
 };
