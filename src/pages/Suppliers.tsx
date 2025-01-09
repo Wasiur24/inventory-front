@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import SupplierService from '../services/supplier.service'; // Assuming SupplierService is in this path
+import SupplierService from '../services/Supplier.service'; // Assuming SupplierService is in this path
 import { useNavigate } from 'react-router-dom';
 
 interface Supplier {
