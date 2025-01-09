@@ -6,13 +6,13 @@
 //   baseURL: API_BASE_URL,
 // });
 
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
-const API_BASE_URL = 'https://billingposbackend.vercel.app';
-// const API_BASE_URL = import.meta.env.VITE_BASE_URL;
+const API_BASE_URL: string = import.meta.env.VITE_BASE_URL || 'https://billingposbackend.vercel.app/api/v1';
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
+
+const api: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL || 'https://billingposbackend.vercel.app',
 });
 
 // Add token to requests

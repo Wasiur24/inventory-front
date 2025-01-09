@@ -29,6 +29,7 @@ export interface RegisterData  {
 const UserService = {
   login: async (credentials: LoginCredentials) => {
     const response = await apiClient.post("/user/login", credentials);
+    console.log(response,"dsfghj");
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
