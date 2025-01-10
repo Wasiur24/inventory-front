@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, MoreVertical } from 'lucide-react';
-import ProductService from '../services/Product.service';
-import { useNavigate } from 'react-router-dom';
-
-import {
-  getAllCategories,
- 
-} from '../services/Category.service';
+import React, { useState, useEffect, useRef } from "react";
+import { Plus, MoreVertical } from "lucide-react";
+import ProductService from "../services/Product.service";
+import { useNavigate } from "react-router-dom";
+import Barcode from "react-barcode";
+import { getAllCategories } from "../services/Category.service";
+import { useReactToPrint } from "react-to-print";
 
 interface Product {
   id: string;
@@ -25,15 +23,17 @@ interface Product {
   weight: number;
 }
 
-
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
-   const [categories, setCategories] = useState<[]>([]);
+  const [categories, setCategories] = useState<[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [updatedProduct, setUpdatedProduct] = useState<Product | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
+  const printRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -44,15 +44,13 @@ export default function Products() {
         setCategories(data);
         console.log(data);
       } catch (error) {
-        console.error('Failed to fetch categories:', error);
+        console.error("Failed to fetch categories:", error);
       } finally {
         setLoading(false);
       }
     };
     fetchCategories();
   }, []);
-
-
 
   // Fetch products from API
   useEffect(() => {
@@ -61,7 +59,7 @@ export default function Products() {
         const data = await ProductService.getAllProducts();
         setProducts(data);
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error("Failed to fetch products:", error);
       } finally {
         setLoading(false);
       }
@@ -73,18 +71,18 @@ export default function Products() {
   // Handle delete product
   const handleDeleteProduct = async (id: string) => {
     try {
-      console.log('Attempting to delete product with ID:', id);
+      console.log("Attempting to delete product with ID:", id);
       await ProductService.deleteProduct(id);
-      setProducts((prevProducts) => prevProducts.filter((product) => product._id !== id));
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product._id !== id)
+      );
       setActiveDropdown(null); // Close dropdown after delete
-      console.log('Product deleted successfully');
+      console.log("Product deleted successfully");
     } catch (error) {
-      console.error('Failed to delete product:', error);
+      console.error("Failed to delete product:", error);
     }
   };
 
-
-  
   // Handle save product
   const handleSaveProduct = async () => {
     if (!editingProduct || !updatedProduct) return;
@@ -92,16 +90,22 @@ export default function Products() {
     try {
       await ProductService.updateProduct(editingProduct._id, updatedProduct);
       const updatedProducts = products.map((product) =>
-        product._id === editingProduct._id ? { ...product, ...updatedProduct } : product
+        product._id === editingProduct._id
+          ? { ...product, ...updatedProduct }
+          : product
       );
       setProducts(updatedProducts);
       setIsModalOpen(false);
       setEditingProduct(null);
       setUpdatedProduct(null);
     } catch (error) {
-      console.error('Failed to update product:', error);
+      console.error("Failed to update product:", error);
     }
   };
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+  });
 
   return (
     <div>
@@ -109,7 +113,7 @@ export default function Products() {
         <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
         <button
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          onClick={() => navigate('/addproduct')}
+          onClick={() => navigate("/addproduct")}
         >
           <Plus className="h-5 w-5 mr-2" />
           Add Product
@@ -123,7 +127,7 @@ export default function Products() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   S.NO:
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -148,46 +152,54 @@ export default function Products() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {products?.map((product, index) => (
-               
                 <tr key={product._id}>
-                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{index+1}</div>
-                  </td>
-                  
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{product?.name}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {index + 1}
+                    </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
-
-                
-
-                  <div className="text-sm text-gray-500">
-  {categories?.map((category) => {
-    if (category._id === product.category) {
-      return category?.name;
-    }
-    return null; // Avoid rendering anything for non-matching categories
-  })}
-
-  {/* Fallback to display product.category if no match is found */}
-  {categories.some((category) => category._id === product.category) ? null : product.category}
-</div>
-
-
+                    <div className="text-sm font-medium text-gray-900">
+                      {product?.name}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{product?.quantity}</div>
+                    <div className="text-sm text-gray-500">
+                      {categories?.map((category) => {
+                        if (category._id === product.category) {
+                          return category?.name;
+                        }
+                        return null; // Avoid rendering anything for non-matching categories
+                      })}
+
+                      {/* Fallback to display product.category if no match is found */}
+                      {categories.some(
+                        (category) => category._id === product.category
+                      )
+                        ? null
+                        : product.category}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">₹{product?.sellingPrice
-                    }</div>
+                    <div className="text-sm text-gray-900">
+                      {product?.quantity}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
+                      ₹{product?.sellingPrice}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product?.quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        product?.quantity > 0
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
                     >
-                      {product.quantity > 0 ? 'In Stock' : 'Out of Stock'}
+                      {product.quantity > 0 ? "In Stock" : "Out of Stock"}
                     </span>
                   </td>
 
@@ -196,13 +208,25 @@ export default function Products() {
                       <button
                         className="text-gray-500 hover:text-gray-700"
                         onClick={() =>
-                          setActiveDropdown(activeDropdown === product._id ? null : product._id)
+                          setActiveDropdown(
+                            activeDropdown === product._id ? null : product._id
+                          )
                         }
                       >
                         <MoreVertical className="h-5 w-5" />
                       </button>
                       {activeDropdown === product._id && (
                         <div className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-10">
+                          <button
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                            onClick={() => {
+                              setViewingProduct(product);
+                              setIsViewModalOpen(true);
+                              setActiveDropdown(null);
+                            }}
+                          >
+                            View
+                          </button>
                           <button
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                             onClick={() => {
@@ -220,7 +244,6 @@ export default function Products() {
                           >
                             Delete
                           </button>
-
                         </div>
                       )}
                     </div>
@@ -244,66 +267,87 @@ export default function Products() {
               }}
             >
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
                 <input
                   type="text"
                   value={updatedProduct.name}
                   onChange={(e) =>
-                    setUpdatedProduct({ ...updatedProduct, name: e.target.value })
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      name: e.target.value,
+                    })
                   }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                   required
                 />
               </div>
               <div className="mt-1 block w-full">
-  <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-    Category
-  </label>
-  <select
-    id="category"
-    value={updatedProduct.category} // Initially shows the product's category
-    onChange={(e) =>
-      setUpdatedProduct({ ...updatedProduct, category: e.target.value })
-    } // Update state with selected category ID
-    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-    required
-  >
-    {/* Display product's current category name as the first option */}
-    <option value={updatedProduct.category} disabled>
-      {categories.find((category) => category._id === updatedProduct.category)?.name || "Select a category"}
-    </option>
+                <label
+                  htmlFor="category"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Category
+                </label>
+                <select
+                  id="category"
+                  value={updatedProduct.category} // Initially shows the product's category
+                  onChange={(e) =>
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      category: e.target.value,
+                    })
+                  } // Update state with selected category ID
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                  required
+                >
+                  {/* Display product's current category name as the first option */}
+                  <option value={updatedProduct.category} disabled>
+                    {categories.find(
+                      (category) => category._id === updatedProduct.category
+                    )?.name || "Select a category"}
+                  </option>
 
-    {/* Render all available categories */}
-    {categories.map((category) => (
-      <option key={category._id} value={category._id}>
-        {category.name}
-      </option>
-    ))}
-  </select>
-</div>
-
+                  {/* Render all available categories */}
+                  {categories.map((category) => (
+                    <option key={category._id} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Quantity
+                </label>
                 <input
                   type="text"
                   value={updatedProduct.quantity}
                   onChange={(e) =>
-                    setUpdatedProduct({ ...updatedProduct, quantity: e.target.value })
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      quantity: e.target.value,
+                    })
                   }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                   required
                 />
               </div>
 
-
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Price</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Price
+                </label>
                 <input
                   type="number"
                   value={updatedProduct.sellingPrice}
                   onChange={(e) =>
-                    setUpdatedProduct({ ...updatedProduct, sellingPrice: Number(e.target.value) })
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      sellingPrice: Number(e.target.value),
+                    })
                   }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                   required
@@ -329,6 +373,49 @@ export default function Products() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {isViewModalOpen && viewingProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
+            <h2 className="text-xl font-semibold mb-4">Product Details</h2>
+            <p>
+              <strong>Name:</strong> {viewingProduct.name}
+            </p>
+            <p>
+              <strong>Description:</strong> {viewingProduct.description}
+            </p>
+            <p>
+              <strong>Category:</strong>{" "}
+              {
+                categories.find(
+                  (category) => category._id === viewingProduct.category
+                )?.name
+              }
+            </p>
+            <p>
+              <strong>Price:</strong> ₹{viewingProduct.sellingPrice}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {viewingProduct.quantity}
+            </p>
+            <button
+              className="float-right text-xs bg-gray-600 text-white px-2 py-1 rounded-md"
+              onClick={handlePrint}
+            >
+              Print
+            </button>
+            <div ref={printRef}>
+              <Barcode value={viewingProduct.sku} />
+            </div>
+            <button
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+              onClick={() => setIsViewModalOpen(false)}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
