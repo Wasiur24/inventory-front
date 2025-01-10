@@ -5,7 +5,7 @@ import SupplierService from "../../services/Supplier.service";
 import { Printer, Barcode, PenLine, Plus, Trash2 } from "lucide-react";
 import Template from "./Template";
 import { useReactToPrint } from "react-to-print";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -88,17 +88,17 @@ const AddProduct: React.FC = () => {
 
       setProductsData(products);
       // setTimeout(() => {
-      setTimeout(() => {
-        handlePrint();
-      }, 2000);
-
+      if (products.length) {
+        setTimeout(() => {
+          handlePrint();
+        }, 2000);
+      }
     } catch (error) {
       console.error("Error printing receipt:", error);
       alert("Failed to print receipt. Please check printer connection.");
     }
   };
 
- 
   const handleChange = (
     index: number,
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -159,7 +159,6 @@ const AddProduct: React.FC = () => {
     return true;
   };
 
- 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateProducts()) return;
@@ -170,7 +169,16 @@ const AddProduct: React.FC = () => {
 
       console.log(response.products);
 
-      printReceipt(response.products);
+      // printReceipt(response.products);
+      printReceipt(
+        response.products?.filter((product: any) => {
+          const isexisted = products.find((p) => p.name === product.name)?.sku
+            ? false
+            : true;
+
+          return isexisted;
+        })
+      );
 
       toast.success("Products added successfully!", {
         position: "top-right",
