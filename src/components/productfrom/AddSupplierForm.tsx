@@ -48,7 +48,7 @@ const AddSupplier: React.FC = () => {
         <input
           type="text"
           name="name"
-          placeholder="Name"
+          placeholder="Company Name"
           value={supplierData.name}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"

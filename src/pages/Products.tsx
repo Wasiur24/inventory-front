@@ -165,7 +165,8 @@ export default function Products() {
                     <div className="text-sm text-gray-900">{product.quantity}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">₹{product.price}</div>
+                    <div className="text-sm text-gray-900">₹{product.sellingPrice
+                    }</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span

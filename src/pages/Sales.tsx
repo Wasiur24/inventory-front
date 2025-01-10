@@ -88,7 +88,7 @@ export default function Sales() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Product name
+                 S.No:
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Customer
@@ -105,10 +105,10 @@ export default function Sales() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {transactions.map((transaction) => (
+              {transactions.map((transaction, index) => (
                 <tr key={transaction._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction._id}
+                    {index+1}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {transaction.customerName}
