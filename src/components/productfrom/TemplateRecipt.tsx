@@ -39,7 +39,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
     <div ref={componentref} className="max-w-md mx-auto p-6 bg-white mb-7 pb-7 ">
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold">SALES RECEIPT</h1>
-        <p className="text-gray-600 font-bold">{format(new Date(), "MMMM dd, yyyy HH:mm:ss")}</p>
+        <p className="text-gray-900 ">{format(new Date(), "MMMM dd, yyyy HH:mm:ss")}</p>
       </div>
 
       <div className="mb-6">
@@ -78,9 +78,12 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
         </div>
       </div>
 
-      <div className="text-center text-sm text-gray-600 mt-8 font-bold">
+      <div className="text-center text-sm text-gray-800 mt-8 ">
         <p>Thank you for your purchase!</p>
         <p>Please visit again</p>
+      </div>
+      <div className="text-center text-sm text-gray-800 mt-4 ">
+
       </div>
     </div>
   );

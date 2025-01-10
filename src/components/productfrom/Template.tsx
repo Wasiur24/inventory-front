@@ -5,8 +5,8 @@ export default function Template({ componentref, products }: any) {
     <div ref={componentref}   className="mb-5 pb-4 ">
       {console.log(products)}
       {products?.map((product: any) => (
-        <div key={product.id}>
-          <Barcode value={product.sku} />
+        <div key={product.id} className="">
+          <Barcode value={product.sku}  />
           <h1 className="text-center">{product.name}</h1>
         </div>
       ))}

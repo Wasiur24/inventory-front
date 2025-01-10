@@ -4,6 +4,7 @@ export interface Category {
   _id?: string;
   name: string;
   description: string;
+  gstnumber:number;
   createdAt?: string;
   updatedAt?: string;
 }

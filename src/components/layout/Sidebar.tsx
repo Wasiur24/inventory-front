@@ -6,9 +6,9 @@ import { LayoutDashboard, Package, Users, ShoppingCart, BarChart, LogOut,Tag } f
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', roles: ['admin', 'user'] },
   { icon: Package, label: 'Products', path: '/products', roles: ['admin'] },
+  { icon: Tag, label: 'Categories', path: '/categories', roles: ['admin'] },
   { icon: Users, label: 'Suppliers', path: '/suppliers', roles: ['admin'] },
   { icon: ShoppingCart, label: 'Purchases', path: '/purchases', roles: ['admin'] },
-  { icon: Tag, label: 'Categories', path: '/categories', roles: ['admin'] },
   { icon: BarChart, label: 'Sales', path: '/sales', roles: ['admin', 'user'] },
 ];
 
