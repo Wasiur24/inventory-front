@@ -2,11 +2,11 @@
 import axios, { AxiosInstance } from 'axios';
 
 // Define the base URL for the API
-// const API_BASE_URL: string = import.meta.env.VITE_BASE_URL || 'https://billingpos-backend.onrender.com/api/v1';
+const API_BASE_URL: string = import.meta.env.VITE_BASE_URL || 'https://billingpos-backend.onrender.com/api/v1';
 
 // Create an Axios instance with the base URL
 const apiClient: AxiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api/v1",
+  baseURL: API_BASE_URL,
 });
 
 // Add an interceptor to include the token in the Authorization header for every request
