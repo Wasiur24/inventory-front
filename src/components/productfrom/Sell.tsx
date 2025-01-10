@@ -1,6 +1,3 @@
-
-
-
 // import React, { useState, useEffect, useRef } from "react";
 // import SalesService, { SaleProduct } from "../../services/Sales.service";
 // import { Printer, Barcode, PenLine, Plus, Trash2 } from 'lucide-react';
@@ -11,10 +8,6 @@
 // import  ProductService from "../../services/Product.service";
 
 // import "react-toastify/dist/ReactToastify.css";
-
-
-
-
 
 // const Selladd: React.FC = () => {
 //   const [saleDetails, setSaleDetails] = useState({
@@ -28,16 +21,13 @@
 //   const [isManualEntry, setIsManualEntry] = useState(false);
 
 //   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-//   const skuInputRef = useRef<HTMLInputElement>(null);
 
-  
+//   const skuInputRef = useRef<HTMLInputElement>(null);
 
 //   const toggleEntryMode = () => {
 //     setIsManualEntry(!isManualEntry);
 //     setIsScanning(false);
 //   };
-
 
 //   const [products, setProducts] = useState([]);
 
@@ -130,7 +120,7 @@
 //         `Customer: ${saleData.customerName}\n`,
 //         `Contact: ${saleData.customerContact}\n`,
 //         '-'.repeat(32) + '\n',
-//         ...saleData.products.map((product: any) => 
+//         ...saleData.products.map((product: any) =>
 //           `${product.sku} x${product.quantitySold} - ₹${product.totalAmount.toFixed(2)}\n`
 //         ),
 //         '-'.repeat(32) + '\n',
@@ -153,9 +143,9 @@
 
 //   const handleSubmit = async (e: React.FormEvent) => {
 //     e.preventDefault();
-    
+
 //     if (isSubmitting) return;
-    
+
 //     try {
 //       setIsSubmitting(true);
 
@@ -178,9 +168,9 @@
 //       };
 
 //       const response = await SalesService.createSale(salePayload);
-      
+
 //       await printReceipt(response);
-      
+
 //       // Reset form
 //       setSaleDetails({
 //         products: [{ sku: "", quantitySold: 1 }],
@@ -201,14 +191,14 @@
 //   return (
 //     <div className="max-w-4xl mx-auto p-6">
 //       <h1 className="text-2xl font-bold mb-6">Sell Products</h1>
-      
+
 //       <div className="mb-4">
 //         <button
 //           type="button"
 //           onClick={toggleEntryMode}
 //           className={`flex items-center gap-2 px-4 py-2 rounded-md ${
-//             isManualEntry 
-//               ? 'bg-yellow-500 hover:bg-yellow-600' 
+//             isManualEntry
+//               ? 'bg-yellow-500 hover:bg-yellow-600'
 //               : 'bg-blue-500 hover:bg-blue-600'
 //           } text-white`}
 //         >
@@ -242,7 +232,7 @@
 //                   </button>
 //                 )}
 //               </div>
-              
+
 //               <div className="mb-4">
 //                 <label className="block text-sm font-medium text-gray-700" htmlFor={`sku-${index}`}>
 //                   SKU {!isManualEntry && isScanning && index === saleDetails.products.length - 1 && "(Scanning...)"}
@@ -342,8 +332,8 @@
 //           type="submit"
 //           disabled={isSubmitting}
 //           className={`flex items-center gap-2 px-4 py-2 rounded-md ${
-//             isSubmitting 
-//               ? 'bg-gray-400 cursor-not-allowed' 
+//             isSubmitting
+//               ? 'bg-gray-400 cursor-not-allowed'
 //               : 'bg-blue-500 hover:bg-blue-600'
 //           } text-white w-full justify-center`}
 //         >
@@ -359,20 +349,30 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import SalesService, { SaleProduct } from "../../services/Sales.service";
-import { Printer, Barcode, PenLine, Plus, Trash2, ArrowRight } from 'lucide-react';
+import {
+  Printer,
+  Barcode,
+  PenLine,
+  Plus,
+  Trash2,
+  ArrowRight,
+} from "lucide-react";
 import TemplateRecipt from "./TemplateRecipt";
 import ProductService from "../../services/Product.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useReactToPrint } from "react-to-print";
 
 const Selladd: React.FC = () => {
   const [step, setStep] = useState(1);
   const [saleDetails, setSaleDetails] = useState({
-    products: [{ sku: "", quantitySold: 1, name: "", sellingPrice: 0, totalAmount: 0 }],
+    products: [
+      { sku: "", quantitySold: 1, name: "", sellingPrice: 0, totalAmount: 0 },
+    ],
     paymentMethod: "",
     customerName: "",
     customerContact: "",
-    totalSaleAmount: 0
+    totalSaleAmount: 0,
   });
   const [isScanning, setIsScanning] = useState(false);
   const [isManualEntry, setIsManualEntry] = useState(false);
@@ -387,20 +387,28 @@ const Selladd: React.FC = () => {
         const data = await ProductService.getAllProducts();
         setProducts(data);
       } catch (err) {
-        toast.error(`Error fetching products: ${err.message || "Unknown error"}`);
+        toast.error(
+          `Error fetching products: ${err.message || "Unknown error"}`
+        );
       }
     };
     fetchProducts();
   }, []);
 
   const calculateTotalAmount = (products) => {
-    return products.reduce((total, product) => total + (product.sellingPrice * product.quantitySold), 0);
+    return products.reduce(
+      (total, product) => total + product.sellingPrice * product.quantitySold,
+      0
+    );
   };
 
-  const handleSkuChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleSkuChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const sku = e.target.value;
     const updatedProducts = [...saleDetails.products];
-    const product = products.find(p => p.sku === sku);
+    const product = products.find((p) => p.sku === sku);
 
     if (product) {
       updatedProducts[index] = {
@@ -408,7 +416,7 @@ const Selladd: React.FC = () => {
         sku,
         name: product.name,
         sellingPrice: product.sellingPrice,
-        totalAmount: product.sellingPrice * updatedProducts[index].quantitySold
+        totalAmount: product.sellingPrice * updatedProducts[index].quantitySold,
       };
     } else {
       updatedProducts[index] = {
@@ -416,83 +424,107 @@ const Selladd: React.FC = () => {
         sku,
         name: "",
         sellingPrice: 0,
-        totalAmount: 0
+        totalAmount: 0,
       };
     }
 
     const totalSaleAmount = calculateTotalAmount(updatedProducts);
-    setSaleDetails(prev => ({
+    setSaleDetails((prev) => ({
       ...prev,
       products: updatedProducts,
-      totalSaleAmount
+      totalSaleAmount,
     }));
   };
 
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleQuantityChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const quantity = parseInt(e.target.value) || 0;
     const updatedProducts = [...saleDetails.products];
     updatedProducts[index] = {
       ...updatedProducts[index],
       quantitySold: quantity,
-      totalAmount: quantity * updatedProducts[index].sellingPrice
+      totalAmount: quantity * updatedProducts[index].sellingPrice,
     };
 
     const totalSaleAmount = calculateTotalAmount(updatedProducts);
-    setSaleDetails(prev => ({
+    setSaleDetails((prev) => ({
       ...prev,
       products: updatedProducts,
-      totalSaleAmount
+      totalSaleAmount,
     }));
   };
 
   const addProductField = () => {
-    setSaleDetails(prev => ({
+    setSaleDetails((prev) => ({
       ...prev,
-      products: [...prev.products, { sku: "", quantitySold: 1, name: "", sellingPrice: 0, totalAmount: 0 }]
+      products: [
+        ...prev.products,
+        { sku: "", quantitySold: 1, name: "", sellingPrice: 0, totalAmount: 0 },
+      ],
     }));
   };
 
   const removeProductField = (index: number) => {
     if (saleDetails.products.length > 1) {
-      const updatedProducts = saleDetails.products.filter((_, i) => i !== index);
+      const updatedProducts = saleDetails.products.filter(
+        (_, i) => i !== index
+      );
       const totalSaleAmount = calculateTotalAmount(updatedProducts);
-      setSaleDetails(prev => ({
+      setSaleDetails((prev) => ({
         ...prev,
         products: updatedProducts,
-        totalSaleAmount
+        totalSaleAmount,
       }));
     }
   };
 
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setSaleDetails(prev => ({
+    setSaleDetails((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
+
+  const printReceipt = useReactToPrint({
+    contentRef: receiptRef,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-    
+
     try {
       setIsSubmitting(true);
       const response = await SalesService.createSale(saleDetails);
-      
+      printReceipt();
+
       // Reset form and go back to step 1
       setSaleDetails({
-        products: [{ sku: "", quantitySold: 1, name: "", sellingPrice: 0, totalAmount: 0 }],
+        products: [
+          {
+            sku: "",
+            quantitySold: 1,
+            name: "",
+            sellingPrice: 0,
+            totalAmount: 0,
+          },
+        ],
         paymentMethod: "",
         customerName: "",
         customerContact: "",
-        totalSaleAmount: 0
+        totalSaleAmount: 0,
       });
       setStep(1);
       toast.success("Sale recorded successfully!");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to record the sale");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to record the sale"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -501,16 +533,24 @@ const Selladd: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">New Sale</h1>
-      
+
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex gap-2">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            }`}>1</div>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 2 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            }`}>2</div>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                step === 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}
+            >
+              1
+            </div>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                step === 2 ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}
+            >
+              2
+            </div>
           </div>
         </div>
       </div>
@@ -542,8 +582,12 @@ const Selladd: React.FC = () => {
                           placeholder="Enter SKU"
                         />
                       </td>
-                      <td className="px-4 py-2 border-b">{product.name || '-'}</td>
-                      <td className="px-4 py-2 border-b">₹{product.sellingPrice.toFixed(2)}</td>
+                      <td className="px-4 py-2 border-b">
+                        {product.name || "-"}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        ₹{product.sellingPrice.toFixed(2)}
+                      </td>
                       <td className="px-4 py-2 border-b">
                         <input
                           type="number"
@@ -553,7 +597,9 @@ const Selladd: React.FC = () => {
                           className="w-20 border rounded px-2 py-1"
                         />
                       </td>
-                      <td className="px-4 py-2 border-b">₹{product.totalAmount.toFixed(2)}</td>
+                      <td className="px-4 py-2 border-b">
+                        ₹{product.totalAmount.toFixed(2)}
+                      </td>
                       <td className="px-4 py-2 border-b">
                         {saleDetails.products.length > 1 && (
                           <button
@@ -570,8 +616,12 @@ const Selladd: React.FC = () => {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan={4} className="px-4 py-2 text-right font-bold">Grand Total:</td>
-                    <td className="px-4 py-2 font-bold">₹{saleDetails.totalSaleAmount.toFixed(2)}</td>
+                    <td colSpan={4} className="px-4 py-2 text-right font-bold">
+                      Grand Total:
+                    </td>
+                    <td className="px-4 py-2 font-bold">
+                      ₹{saleDetails.totalSaleAmount.toFixed(2)}
+                    </td>
                     <td></td>
                   </tr>
                 </tfoot>
@@ -592,7 +642,9 @@ const Selladd: React.FC = () => {
                 type="button"
                 onClick={() => setStep(2)}
                 className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                disabled={!saleDetails.products.some(p => p.sku && p.quantitySold > 0)}
+                disabled={
+                  !saleDetails.products.some((p) => p.sku && p.quantitySold > 0)
+                }
               >
                 Next
                 <ArrowRight size={20} />
@@ -604,7 +656,9 @@ const Selladd: React.FC = () => {
         {step === 2 && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Payment Method</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Payment Method
+              </label>
               <select
                 name="paymentMethod"
                 value={saleDetails.paymentMethod}
@@ -621,7 +675,9 @@ const Selladd: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Customer Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Customer Name
+              </label>
               <input
                 type="text"
                 name="customerName"
@@ -633,7 +689,9 @@ const Selladd: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Customer Contact</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Customer Contact
+              </label>
               <input
                 type="text"
                 name="customerContact"
@@ -659,14 +717,16 @@ const Selladd: React.FC = () => {
                 className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 disabled:bg-gray-400"
               >
                 <Printer size={20} />
-                {isSubmitting ? 'Processing...' : 'Complete Sale & Print Receipt'}
+                {isSubmitting
+                  ? "Processing..."
+                  : "Complete Sale & Print Receipt"}
               </button>
             </div>
           </div>
         )}
       </form>
 
-      <div style={{ display: 'block' }}>
+      <div style={{ display: "block" }}>
         <TemplateRecipt componentref={receiptRef} saleDetails={saleDetails} />
       </div>
     </div>
