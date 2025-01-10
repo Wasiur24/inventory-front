@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, MoreVertical } from 'lucide-react';
 import ProductService from '../services/Product.service';
 import { useNavigate } from 'react-router-dom';
+
 import {
   getAllCategories,
  
@@ -41,6 +42,7 @@ export default function Products() {
       try {
         const data = await getAllCategories();
         setCategories(data);
+        console.log(data);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
       } finally {
@@ -145,32 +147,44 @@ export default function Products() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {products.map((product, index) => (
-                console.log(product,"dsksdkdkfjkjfkljkljfjlk"),
+              {products?.map((product, index) => (
+               
                 <tr key={product._id}>
                    <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{index+1}</div>
                   </td>
                   
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                    <div className="text-sm font-medium text-gray-900">{product?.name}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
 
                 
 
-                    <div className="text-sm text-gray-500">{product.category}</div>
+                  <div className="text-sm text-gray-500">
+  {categories?.map((category) => {
+    if (category._id === product.category) {
+      return category?.name;
+    }
+    return null; // Avoid rendering anything for non-matching categories
+  })}
+
+  {/* Fallback to display product.category if no match is found */}
+  {categories.some((category) => category._id === product.category) ? null : product.category}
+</div>
+
+
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{product.quantity}</div>
+                    <div className="text-sm text-gray-900">{product?.quantity}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">₹{product.sellingPrice
+                    <div className="text-sm text-gray-900">₹{product?.sellingPrice
                     }</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product?.quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}
                     >
                       {product.quantity > 0 ? 'In Stock' : 'Out of Stock'}
@@ -241,18 +255,33 @@ export default function Products() {
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Category</label>
-                <input
-                  type="text"
-                  value={updatedProduct.category}
-                  onChange={(e) =>
-                    setUpdatedProduct({ ...updatedProduct, category: e.target.value })
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                  required
-                />
-              </div>
+              <div className="mt-1 block w-full">
+  <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+    Category
+  </label>
+  <select
+    id="category"
+    value={updatedProduct.category} // Initially shows the product's category
+    onChange={(e) =>
+      setUpdatedProduct({ ...updatedProduct, category: e.target.value })
+    } // Update state with selected category ID
+    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+    required
+  >
+    {/* Display product's current category name as the first option */}
+    <option value={updatedProduct.category} disabled>
+      {categories.find((category) => category._id === updatedProduct.category)?.name || "Select a category"}
+    </option>
+
+    {/* Render all available categories */}
+    {categories.map((category) => (
+      <option key={category._id} value={category._id}>
+        {category.name}
+      </option>
+    ))}
+  </select>
+</div>
+
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Quantity</label>
@@ -272,9 +301,9 @@ export default function Products() {
                 <label className="block text-sm font-medium text-gray-700">Price</label>
                 <input
                   type="number"
-                  value={updatedProduct.price}
+                  value={updatedProduct.sellingPrice}
                   onChange={(e) =>
-                    setUpdatedProduct({ ...updatedProduct, price: Number(e.target.value) })
+                    setUpdatedProduct({ ...updatedProduct, sellingPrice: Number(e.target.value) })
                   }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                   required

@@ -41,17 +41,18 @@ const AddProduct: React.FC = () => {
       name: "",
       description: "",
       category: "",
-      price: 0,
-      purchasePrice: 0,
-      sellingPrice: 0,
-      quantity: 0,
+      price: undefined,
+      purchasePrice: undefined,
+      sellingPrice: undefined,
+      quantity: undefined,
       email: "",
       sku: "",
       manufacturingDate: "",
       expiryDate: "",
-      weight: 0,
+      weight: undefined,
     };
   }
+  
 
   useEffect(() => {
     const fetchSuppliers = async () => {
