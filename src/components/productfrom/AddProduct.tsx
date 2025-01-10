@@ -13,7 +13,7 @@ type Product = {
   name: string;
   description: string;
   category: string;
-  price: number;
+  mrpprice: number;
   purchasePrice: number;
   sellingPrice: number;
   quantity: number;
@@ -41,7 +41,7 @@ const AddProduct: React.FC = () => {
       name: "",
       description: "",
       category: "",
-      price: undefined,
+      mrpprice: undefined,
       purchasePrice: undefined,
       sellingPrice: undefined,
       quantity: undefined,
@@ -117,7 +117,7 @@ const AddProduct: React.FC = () => {
 
   const parseValue = (value: string, name: string): string | number => {
     if (
-      // name === "price" ||
+      name === "mrpprice" ||
 
       name === "purchasePrice" ||
       name === "sellingPrice" ||
@@ -295,17 +295,17 @@ const AddProduct: React.FC = () => {
                 />
               </div>
 
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700">Price</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700"> MRP Price</label>
                 <input
-                  name="price"
+                  name="mrpprice"
                   type="number"
-                  value={product.price}
+                  value={product.mrpprice}
                   onChange={(e) => handleChange(index, e)}
                   className="border border-gray-300 rounded-md p-2 w-full"
                   required
                 />
-              </div> */}
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
