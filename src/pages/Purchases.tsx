@@ -118,6 +118,12 @@ const navigate = useNavigate();
       console.error('Failed to add purchase:', error);
     }
   };
+  const handleNavigateProduct = () => {
+    navigate('/addproduct');
+  };
+  const handleNavigateSuppliers = () => {
+    navigate('/suppliers/add');
+  };
 
   return (
     <div>
@@ -213,12 +219,19 @@ const navigate = useNavigate();
   required
 >
   <option value="">Select Product</option>
+ 
+ 
   {products.map((product) => (
+  
     <option key={product._id} value={product._id}>
       {product.name}
     </option>
   ))}
 </select>
+
+
+<button className='border-2 border-blue-400 hover:border-blue-500 text-slate-600 text-sm mt-1 font-sans py-1 px-2 rounded hover:scale-105' onClick={handleNavigateProduct}>Add Product</button>
+
               </div>
 
               <div className="mb-4">
@@ -239,6 +252,7 @@ const navigate = useNavigate();
     </option>
   ))}
 </select>
+<button className=' border-2 border-blue-400 hover:border-blue-500 text-slate-600 text-sm mt-1 font-sans py-1 px-2 rounded hover:scale-105' onClick={ handleNavigateSuppliers}>Add Suppliers</button>
               </div>
 
              
