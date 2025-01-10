@@ -36,10 +36,10 @@ interface TemplateReciptProps {
 
 const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetails }) => {
   return (
-    <div ref={componentref} className="max-w-md mx-auto p-6 bg-white">
+    <div ref={componentref} className="max-w-md mx-auto p-6 bg-white mb-7 pb-7 ">
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold">SALES RECEIPT</h1>
-        <p className="text-gray-600">{format(new Date(), "MMMM dd, yyyy HH:mm:ss")}</p>
+        <p className="text-gray-600 font-bold">{format(new Date(), "MMMM dd, yyyy HH:mm:ss")}</p>
       </div>
 
       <div className="mb-6">
@@ -65,8 +65,8 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
               <tr key={index} className="border-b">
                 <td className="py-2">{product.name}</td>
                 <td className="text-right py-2">{product.quantitySold}</td>
-                <td className="text-right py-2">${product.sellingPrice.toFixed(2)}</td>
-                <td className="text-right py-2">${product.totalAmount.toFixed(2)}</td>
+                <td className="text-right py-2">₹{product.sellingPrice.toFixed(2)}</td>
+                <td className="text-right py-2"> ₹{product.totalAmount.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
@@ -74,11 +74,11 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
 
         <div className="flex justify-between font-bold text-lg border-t pt-2">
           <span>Total Amount:</span>
-          <span>${saleDetails.totalSaleAmount.toFixed(2)}</span>
+          <span> ₹{saleDetails.totalSaleAmount.toFixed(2)}</span>
         </div>
       </div>
 
-      <div className="text-center text-sm text-gray-600 mt-8">
+      <div className="text-center text-sm text-gray-600 mt-8 font-bold">
         <p>Thank you for your purchase!</p>
         <p>Please visit again</p>
       </div>
