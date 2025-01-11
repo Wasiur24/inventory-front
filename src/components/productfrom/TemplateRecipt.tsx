@@ -177,7 +177,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
 
       <div className="mt-2 border-t border-black">
         <div className="flex justify-between font-bold">
-          <span>NET AMOUNT:</span>
+          <span>NET PAYABLE AMT:</span>
           <span>₹{saleDetails.totalSaleAmount.toFixed(2)}</span>
         </div>
         <div className="text-xs mt-2">
@@ -196,7 +196,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
         </div>
       </div>
 
-      <div className="mt-4 text-xs">
+      <div className="mt-4 text-xs border-t border-black">
         <p className="font-bold">Terms & Conditions:</p>
         <ol className="list-decimal list-inside">
           <li>Prices are inclusive of all taxes</li>

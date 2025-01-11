@@ -6,16 +6,29 @@ import Barcode from "react-barcode";
 import { getAllCategories } from "../services/Category.service";
 import { useReactToPrint } from "react-to-print";
 
-interface Product {
+export interface Category {
   id: string;
   name: string;
   description: string;
-  category: string;
-  price: number;
+  gstnumber: number;
+}
+
+export interface Supplier {
+  id: string;
+  name: string;
+  contactInfo?: string; // Add fields based on your Supplier schema
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  category: Category; // Updated to hold populated category details
+  mrpprice: number;
   purchasePrice: number;
   sellingPrice: number;
   quantity: number;
-  supplier: string;
+  supplier: Supplier; // Updated to hold populated supplier details
   sku: string;
   barcode?: string;
   manufacturingDate: string;
@@ -58,6 +71,7 @@ export default function Products() {
       try {
         const data = await ProductService.getAllProducts();
         setProducts(data);
+        console.log(data);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -72,17 +86,25 @@ export default function Products() {
   const handleDeleteProduct = async (id: string) => {
     try {
       console.log("Attempting to delete product with ID:", id);
-      await ProductService.deleteProduct(id);
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product._id !== id)
-      );
-      setActiveDropdown(null); // Close dropdown after delete
-      console.log("Product deleted successfully");
+  
+      // Call the API to delete the product
+      const response = await ProductService.deleteProduct(id);
+  
+      // Ensure the API call was successful
+      if (response.status === 200) {
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product._id !== id)
+        );
+        setActiveDropdown(null); // Close dropdown after delete
+        console.log("Product deleted successfully");
+      } else {
+        console.error("Failed to delete product, response:", response);
+      }
     } catch (error) {
       console.error("Failed to delete product:", error);
     }
   };
-
+  
   // Handle save product
   const handleSaveProduct = async () => {
     if (!editingProduct || !updatedProduct) return;
@@ -166,19 +188,7 @@ export default function Products() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-500">
-                      {categories?.map((category) => {
-                        if (category._id === product.category) {
-                          return category?.name;
-                        }
-                        return null; // Avoid rendering anything for non-matching categories
-                      })}
-
-                      {/* Fallback to display product.category if no match is found */}
-                      {categories.some(
-                        (category) => category._id === product.category
-                      )
-                        ? null
-                        : product.category}
+                      {product?.category?.name || "category not found"}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -239,11 +249,12 @@ export default function Products() {
                             Edit
                           </button>
                           <button
-                            className="block px-4 py-2 text-sm text-red-700 hover:bg-red-100 w-full text-left"
-                            onClick={() => handleDeleteProduct(product._id)}
-                          >
-                            Delete
-                          </button>
+  className="block px-4 py-2 text-sm text-red-700 hover:bg-red-100 w-full text-left"
+  onClick={() => handleDeleteProduct(product._id)}
+>
+  Delete
+</button>
+
                         </div>
                       )}
                     </div>
