@@ -8,6 +8,7 @@ export default function Template({ componentref, products }: any) {
         <div key={product.id} className="">
           <Barcode value={product.sku}  />
           <h1 className="text-center">{product.name}</h1>
+          <h1 className="text-center text-white">{product.name}</h1>
         </div>
       ))}
     </div>

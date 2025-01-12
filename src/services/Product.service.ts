@@ -113,6 +113,27 @@ const ProductService = {
         : undefined,
     }));
   },
+  getAllProductsCategory: async (): Promise<Product[]> => {
+    const response = await apiClient.get(`${API_BASE_URL}/getAllProductsCategory`); // Ensure proper URL concatenation
+    return response.data.map((product: any) => ({
+      ...product,
+      category: {
+        id: product.category._id,
+        name: product.category.name,
+        description: product.category.description,
+        gstnumber: product.category.gstnumber,
+      },
+      supplier: product.supplier
+        ? {
+            id: product.supplier._id,
+            name: product.supplier.name,
+            contactInfo: product.supplier.contactInfo, // Adjust based on supplier fields
+          }
+        : undefined,
+    }));
+  },
+  
+  
 
   deleteProduct: async (id: string) => {
     try {
