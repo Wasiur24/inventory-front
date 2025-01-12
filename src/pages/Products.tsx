@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
 import { getAllCategories } from "../services/Category.service";
 import { useReactToPrint } from "react-to-print";
+import SupplierService from "../services/Supplier.service";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export interface Category {
   id: string;
@@ -47,7 +51,7 @@ export default function Products() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
   const printRef = useRef(null);
-
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +67,20 @@ export default function Products() {
       }
     };
     fetchCategories();
+  }, []);
+  useEffect(() => {
+    const fetchAllSuppliers = async () => {
+      try {
+        const data = await SupplierService.getAllSuppliers();
+        setSuppliers(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllSuppliers();
   }, []);
 
   // Fetch products from API
@@ -84,47 +102,69 @@ export default function Products() {
 
   // Handle delete product
   const handleDeleteProduct = async (id: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    
+    if (!confirmDelete) {
+      return; // If user cancels, do nothing
+    }
+  
     try {
       console.log("Attempting to delete product with ID:", id);
   
       // Call the API to delete the product
       const response = await ProductService.deleteProduct(id);
   
-      // Ensure the API call was successful
-      if (response.status === 200) {
+      // Check if the response contains the success message
+      if (response.message === 'Product deleted successfully') {
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product._id !== id)
         );
         setActiveDropdown(null); // Close dropdown after delete
+        toast.success("Product deleted successfully");
         console.log("Product deleted successfully");
       } else {
         console.error("Failed to delete product, response:", response);
+        toast.error("Failed to delete product");
       }
     } catch (error) {
       console.error("Failed to delete product:", error);
+      toast.error("Error occurred while deleting product");
     }
   };
+  
+  
   
   // Handle save product
   const handleSaveProduct = async () => {
     if (!editingProduct || !updatedProduct) return;
-
+  
     try {
+      // Call the update service
       await ProductService.updateProduct(editingProduct._id, updatedProduct);
+  
+      // Update the product list in state
       const updatedProducts = products.map((product) =>
         product._id === editingProduct._id
           ? { ...product, ...updatedProduct }
           : product
       );
       setProducts(updatedProducts);
+  
+      // Show success toast
+      toast.success("Product updated successfully!");
+  
+      // Close the modal and reset state
       setIsModalOpen(false);
       setEditingProduct(null);
       setUpdatedProduct(null);
     } catch (error) {
       console.error("Failed to update product:", error);
+  
+      // Show error toast
+      toast.error("Failed to update product. Please try again.");
     }
   };
-
+  
   const handlePrint = useReactToPrint({
     contentRef: printRef,
   });
@@ -255,6 +295,7 @@ export default function Products() {
   Delete
 </button>
 
+
                         </div>
                       )}
                     </div>
@@ -328,6 +369,34 @@ export default function Products() {
                   ))}
                 </select>
               </div>
+              <div className="mt-1 block w-full">
+  <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">
+    Suppliers
+  </label>
+  <select
+    id="supplier"
+    value={updatedProduct.supplier} // Correcting the field name to singular
+    onChange={(e) =>
+      setUpdatedProduct({
+        ...updatedProduct,
+        supplier: e.target.value, // Setting the supplier ID
+      })
+    }
+    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+    required
+  >
+    <option value={updatedProduct.supplier} disabled>
+      {suppliers.find((supplier) => supplier._id === updatedProduct.supplier)?.name || "Select a supplier"}
+    </option>
+
+    {suppliers.map((supplier) => (
+      <option key={supplier._id} value={supplier._id}> {/* Set value to supplier's _id */}
+        {supplier.name}
+      </option>
+    ))}
+  </select>
+</div>
+
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">

@@ -115,8 +115,14 @@ const ProductService = {
   },
 
   deleteProduct: async (id: string) => {
-    const response = await apiClient.delete(`${API_BASE_URL}/delete/${id}`);
-    return response.data;
+    try {
+      // Update the API endpoint path to reflect the new route
+      const response = await apiClient.delete(`${API_BASE_URL}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      throw error; // Re-throw the error to handle it in the component if needed
+    }
   },
 };
 
