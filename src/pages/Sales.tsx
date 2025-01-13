@@ -176,10 +176,10 @@ export default function Sales() {
             </p>
             <h3 className="text-lg font-medium mt-4 mb-2">Products:</h3>
             <ul>
-              {selectedTransaction.products.map((product) => (
+              {selectedTransaction?.products.map((product) => (
                 <li key={product._id} className="mb-1">
-                  {product.productId.name} - {product.quantitySold} pcs @ ₹
-                  {product.productId.price} each
+                  {product?.productId?.name} - {product?.quantitySold} pcs @ ₹
+                  {product?.productId?.price} each
                 </li>
               ))}
             </ul>

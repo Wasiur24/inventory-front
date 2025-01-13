@@ -54,20 +54,7 @@ export default function Products() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getAllCategories();
-        setCategories(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCategories();
-  }, []);
+ 
   useEffect(() => {
     const fetchAllSuppliers = async () => {
       try {
@@ -81,6 +68,20 @@ export default function Products() {
       }
     };
     fetchAllSuppliers();
+  }, []);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getAllCategories();
+        setCategories(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
   }, []);
 
   // Fetch products from API

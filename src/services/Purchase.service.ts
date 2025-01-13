@@ -32,6 +32,12 @@ const PurchaseService = {
     const response = await apiClient.get(`${API_BASE_URL}/${id}`);
     return response.data;
   },
+
+  deletePurchase: async (id: string) => {
+    const response = await apiClient.delete(`${API_BASE_URL}/delete/${id}`);
+    return response.data;
+  },
+
 };
 
 export default PurchaseService;
