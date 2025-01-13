@@ -54,21 +54,6 @@ export default function Products() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const navigate = useNavigate();
 
- 
-  useEffect(() => {
-    const fetchAllSuppliers = async () => {
-      try {
-        const data = await SupplierService.getAllSuppliers();
-        setSuppliers(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAllSuppliers();
-  }, []);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -82,6 +67,20 @@ export default function Products() {
       }
     };
     fetchCategories();
+  }, []);
+  useEffect(() => {
+    const fetchAllSuppliers = async () => {
+      try {
+        const data = await SupplierService.getAllSuppliers();
+        setSuppliers(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllSuppliers();
   }, []);
 
   // Fetch products from API
@@ -104,17 +103,17 @@ export default function Products() {
   // Handle delete product
   const handleDeleteProduct = async (id: string) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-    
+
     if (!confirmDelete) {
       return; // If user cancels, do nothing
     }
-  
+
     try {
       console.log("Attempting to delete product with ID:", id);
-  
+
       // Call the API to delete the product
       const response = await ProductService.deleteProduct(id);
-  
+
       // Check if the response contains the success message
       if (response.message === 'Product deleted successfully') {
         setProducts((prevProducts) =>
@@ -132,17 +131,17 @@ export default function Products() {
       toast.error("Error occurred while deleting product");
     }
   };
-  
-  
-  
+
+
+
   // Handle save product
   const handleSaveProduct = async () => {
     if (!editingProduct || !updatedProduct) return;
-  
+
     try {
       // Call the update service
       await ProductService.updateProduct(editingProduct._id, updatedProduct);
-  
+
       // Update the product list in state
       const updatedProducts = products.map((product) =>
         product._id === editingProduct._id
@@ -150,22 +149,22 @@ export default function Products() {
           : product
       );
       setProducts(updatedProducts);
-  
+
       // Show success toast
       toast.success("Product updated successfully!");
-  
+
       // Close the modal and reset state
       setIsModalOpen(false);
       setEditingProduct(null);
       setUpdatedProduct(null);
     } catch (error) {
       console.error("Failed to update product:", error);
-  
+
       // Show error toast
       toast.error("Failed to update product. Please try again.");
     }
   };
-  
+
   const handlePrint = useReactToPrint({
     contentRef: printRef,
   });
@@ -244,11 +243,10 @@ export default function Products() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        product?.quantity > 0
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product?.quantity > 0
                           ? "bg-green-100 text-green-800"
                           : "bg-red-100 text-red-800"
-                      }`}
+                        }`}
                     >
                       {product.quantity > 0 ? "In Stock" : "Out of Stock"}
                     </span>
@@ -290,11 +288,11 @@ export default function Products() {
                             Edit
                           </button>
                           <button
-  className="block px-4 py-2 text-sm text-red-700 hover:bg-red-100 w-full text-left"
-  onClick={() => handleDeleteProduct(product._id)}
->
-  Delete
-</button>
+                            className="block px-4 py-2 text-sm text-red-700 hover:bg-red-100 w-full text-left"
+                            onClick={() => handleDeleteProduct(product._id)}
+                          >
+                            Delete
+                          </button>
 
 
                         </div>
@@ -371,32 +369,32 @@ export default function Products() {
                 </select>
               </div>
               <div className="mt-1 block w-full">
-  <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">
-    Suppliers
-  </label>
-  <select
-    id="supplier"
-    value={updatedProduct.supplier} // Correcting the field name to singular
-    onChange={(e) =>
-      setUpdatedProduct({
-        ...updatedProduct,
-        supplier: e.target.value, // Setting the supplier ID
-      })
-    }
-    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-    required
-  >
-    <option value={updatedProduct.supplier} disabled>
-      {suppliers.find((supplier) => supplier._id === updatedProduct.supplier)?.name || "Select a supplier"}
-    </option>
+                <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">
+                  Suppliers
+                </label>
+                <select
+                  id="supplier"
+                  value={updatedProduct.supplier} // Correcting the field name to singular
+                  onChange={(e) =>
+                    setUpdatedProduct({
+                      ...updatedProduct,
+                      supplier: e.target.value, // Setting the supplier ID
+                    })
+                  }
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                  required
+                >
+                  <option value={updatedProduct.supplier} disabled>
+                    {suppliers.find((supplier) => supplier._id === updatedProduct.supplier)?.name || "Select a supplier"}
+                  </option>
 
-    {suppliers.map((supplier) => (
-      <option key={supplier._id} value={supplier._id}> {/* Set value to supplier's _id */}
-        {supplier.name}
-      </option>
-    ))}
-  </select>
-</div>
+                  {suppliers.map((supplier) => (
+                    <option key={supplier._id} value={supplier._id}> {/* Set value to supplier's _id */}
+                      {supplier.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
 
               <div className="mb-4">
