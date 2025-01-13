@@ -108,14 +108,47 @@ export default function Purchases() {
 
 
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!formData.productId || !formData.supplierId || formData.quantity <= 0 || formData.pricePerUnit <= 0) {
+  //     alert('Please fill out all required fields correctly.');
+  //     return;
+  //   }
+
+  //   try {
+  //     let updatedPurchases;
+  //     if (editingPurchase) {
+  //       // Update an existing purchase.
+  //       const updatedPurchase = await PurchaseService.updatePurchase(editingPurchase._id, formData);
+  //       updatedPurchases = purchases.map((purchase) =>
+  //         purchase._id === editingPurchase._id ? updatedPurchase : purchase
+  //       );
+  //       setPurchases(updatedPurchases);
+  //     } else {
+  //       // Add a new purchase.
+  //       const newPurchase = await PurchaseService.addPurchase(formData);
+  //       updatedPurchases = [...purchases, newPurchase];
+  //     }
+
+  //     setPurchases(updatedPurchases); // Update the state with the new data.
+  //     closeModal(); // Close the modal after successful submission.
+  //   } catch (error) {
+  //     console.error('Failed to save purchase:', error);
+  //     alert('An error occurred. Please try again.');
+  //   }
+  // };
+
+  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!formData.productId || !formData.supplierId || formData.quantity <= 0 || formData.pricePerUnit <= 0) {
       alert('Please fill out all required fields correctly.');
       return;
     }
-
+  
     try {
       let updatedPurchases;
       if (editingPurchase) {
@@ -125,21 +158,35 @@ export default function Purchases() {
           purchase._id === editingPurchase._id ? updatedPurchase : purchase
         );
         setPurchases(updatedPurchases);
+  
+        // Update the product list
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === formData.productId
+              ? { ...product, quantity: product.quantity + formData.quantity } // Update product values as needed
+              : product
+          )
+        );
+  
+        // Show success toast
+        toast.success('Purchase updated successfully!');
       } else {
         // Add a new purchase.
         const newPurchase = await PurchaseService.addPurchase(formData);
         updatedPurchases = [...purchases, newPurchase];
+        setPurchases(updatedPurchases);
+  
+        // Show success toast for adding a new purchase
+        toast.success('Purchase added successfully!');
       }
-
-      setPurchases(updatedPurchases); // Update the state with the new data.
+  
       closeModal(); // Close the modal after successful submission.
     } catch (error) {
       console.error('Failed to save purchase:', error);
-      alert('An error occurred. Please try again.');
+      toast.error('An error occurred. Please try again.');
     }
   };
-
-
+  
 
 
 
@@ -154,9 +201,9 @@ export default function Purchases() {
     });
     setIsModalOpen(true);
   };
-
+  
   const openNewPurchaseModal = () => {
-    setEditingPurchase(null);
+    setEditingPurchase(null); // Explicitly clear editing mode
     setFormData({
       productId: '',
       supplierId: '',
@@ -166,12 +213,10 @@ export default function Purchases() {
     });
     setIsModalOpen(true);
   };
-
+  
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingPurchase(null);
-    setIsViewModalOpen(false);
-    setViewingPurchase(null);
     setFormData({
       productId: '',
       supplierId: '',
@@ -180,6 +225,7 @@ export default function Purchases() {
       totalCost: 0,
     });
   };
+  
 
   const handleNavigateProduct = () => {
     navigate('/products');
@@ -299,118 +345,118 @@ export default function Purchases() {
           </div>
         )}
 
-        {isModalOpen && editingPurchase && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                {editingPurchase ? 'Edit Purchase Order' : 'New Purchase Order'}
-              </h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Product</label>
-                  <select
-                    name="productId"
-                    value={formData.productId}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded-md p-2 w-full"
-                    required
-                  >
-                    <option value="">Select Product</option>
-                    {products.map((product) => (
-                      <option key={product._id} value={product._id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    onClick={handleNavigateProduct}
-                    className="border-2 border-blue-400 hover:border-blue-500 text-slate-600 text-sm mt-1 font-sans py-1 px-2 rounded hover:scale-105"
-                  >
-                    Add Product
-                  </button>
-                </div>
+{isModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <h2 className="text-lg font-medium text-gray-900 mb-4">
+        {editingPurchase ? 'Edit Purchase Order' : 'New Purchase Order'}
+      </h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Product</label>
+          <select
+            name="productId"
+            value={formData.productId}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded-md p-2 w-full"
+            required
+          >
+            <option value="">Select Product</option>
+            {products.map((product) => (
+              <option key={product._id} value={product._id}>
+                {product.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={handleNavigateProduct}
+            className="border-2 border-blue-400 hover:border-blue-500 text-slate-600 text-sm mt-1 font-sans py-1 px-2 rounded hover:scale-105"
+          >
+            Add Product
+          </button>
+        </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Supplier</label>
-                  <select
-                    name="supplierId"
-                    value={formData.supplierId}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded-md p-2 w-full"
-                    required
-                  >
-                    <option value="">Select Supplier</option>
-                    {suppliers.map((supplier) => (
-                      <option key={supplier._id} value={supplier._id}>
-                        {supplier.name}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    onClick={handleNavigateSuppliers}
-                    className="border-2 border-blue-400 hover:border-blue-500 text-slate-600 text-sm mt-1 font-sans py-1 px-2 rounded hover:scale-105"
-                  >
-                    Add Supplier
-                  </button>
-                </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Supplier</label>
+          <select
+            name="supplierId"
+            value={formData.supplierId}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded-md p-2 w-full"
+            required
+          >
+            <option value="">Select Supplier</option>
+            {suppliers.map((supplier) => (
+              <option key={supplier._id} value={supplier._id}>
+                {supplier.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={handleNavigateSuppliers}
+            className="border-2 border-blue-400 hover:border-blue-500 text-slate-600 text-sm mt-1 font-sans py-1 px-2 rounded hover:scale-105"
+          >
+            Add Supplier
+          </button>
+        </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Quantity</label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    value={formData.quantity}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded-md p-2 w-full"
-                    required
-                  />
-                </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Quantity</label>
+          <input
+            type="number"
+            name="quantity"
+            value={formData.quantity}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded-md p-2 w-full"
+            required
+          />
+        </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Price per Unit</label>
-                  <input
-                    type="number"
-                    name="pricePerUnit"
-                    value={formData.pricePerUnit}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded-md p-2 w-full"
-                    required
-                  />
-                </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Price per Unit</label>
+          <input
+            type="number"
+            name="pricePerUnit"
+            value={formData.pricePerUnit}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded-md p-2 w-full"
+            required
+          />
+        </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Total Cost</label>
-                  <input
-                    type="number"
-                    name="totalCost"
-                    value={formData.totalCost}
-                    readOnly
-                    className="border border-gray-300 rounded-md p-2 w-full"
-                  />
-                </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Total Cost</label>
+          <input
+            type="number"
+            name="totalCost"
+            value={formData.totalCost}
+            readOnly
+            className="border border-gray-300 rounded-md p-2 w-full"
+          />
+        </div>
 
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="px-4 py-2 mr-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={closeModal}
+            className="px-4 py-2 mr-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            {editingPurchase ? 'Update' : 'Add'}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
 
-                  >
-                    {editingPurchase ? 'Update' : 'Add'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
 
 
 
