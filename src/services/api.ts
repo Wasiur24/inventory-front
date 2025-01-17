@@ -6,8 +6,8 @@ import axios, { AxiosInstance } from 'axios';
 
 // Create an Axios instance with the base URL
 const apiClient: AxiosInstance = axios.create({
-  // baseURL: 'https://billingpos-backend.onrender.com/api/v1',
-   baseURL: 'http://localhost:5000/api/v1',
+  baseURL: 'https://billingpos-backend.onrender.com/api/v1',
+   // baseURL: 'http://localhost:5000/api/v1',
 
 });
 
