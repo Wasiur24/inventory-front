@@ -225,6 +225,11 @@ export default function Purchases() {
       totalCost: 0,
     });
   };
+  const closeModalhhh = () => {
+    setIsViewModalOpen(false); // Close the modal
+    setViewingPurchase(null); // Clear the currently viewed purchase
+  };
+  
   
 
   const handleNavigateProduct = () => {
@@ -469,7 +474,7 @@ export default function Purchases() {
               <p><strong>Quantity:</strong> {viewingPurchase?.quantity}</p>
               <p><strong>Total Cost:</strong> ₹{viewingPurchase?.totalCost?.toFixed(2)}</p>
               <p><strong>Purchase Date:</strong> {new Date(viewingPurchase?.purchaseDate).toLocaleString()}</p>
-              <button onClick={closeModal} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Close</button>
+              <button onClick={closeModalhhh} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Close</button>
             </div>
           </div>
         )}
