@@ -6,7 +6,7 @@ import Barcode from "react-barcode";
 import { getAllCategories } from "../services/Category.service";
 import { useReactToPrint } from "react-to-print";
 import SupplierService from "../services/Supplier.service";
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -59,7 +59,7 @@ export default function Products() {
       try {
         const data = await getAllCategories();
         setCategories(data);
-        console.log(data);
+        console.log(data,"cate`");
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       } finally {
@@ -131,7 +131,7 @@ export default function Products() {
       toast.error("Error occurred while deleting product");
     }
   };
-
+  console.log(categories,"ijfgd"); 
 
 
   // Handle save product
@@ -228,7 +228,21 @@ export default function Products() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-500">
-                      {product?.category?.name || "category not found"}
+                      {/* console.log(categories,"ijfgd"); */}
+             {categories?.length > 0 &&
+    categories.map((category) => {
+      console.log(category,"sdfghj");
+      if (category._id == product.category) {
+        // If a match is found
+        
+        return <span key={category._id}>{category.name || product.category.name}</span>;
+      }
+      return null; // Return null for non-matching items
+    })}
+  {/* Check if no matching category was found */}
+  {!categories.some((category) => category._id === product.category) && (
+    <span>Category not found</span>
+  )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
