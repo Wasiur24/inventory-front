@@ -34,9 +34,9 @@ export default function Purchases() {
   const [formData, setFormData] = useState({
     productId: '',
     supplierId: '',
-    quantity: 0,
-    pricePerUnit: 0,
-    totalCost: 0,
+    quantity: undefined,
+    pricePerUnit: undefined,
+    totalCost: undefined,
   });
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewingPurchase, setViewingPurchase] = useState<Purchase | null>(null);
@@ -209,9 +209,9 @@ export default function Purchases() {
     setFormData({
       productId: '',
       supplierId: '',
-      quantity: 0,
-      pricePerUnit: 0,
-      totalCost: 0,
+      quantity: undefined,
+      pricePerUnit: undefined,
+      totalCost: undefined,
     });
     setIsModalOpen(true);
   };
@@ -222,9 +222,9 @@ export default function Purchases() {
     setFormData({
       productId: '',
       supplierId: '',
-      quantity: 0,
-      pricePerUnit: 0,
-      totalCost: 0,
+      quantity: undefined,
+      pricePerUnit: undefined,
+      totalCost: undefined,
     });
   };
   const closeModalhhh = () => {
@@ -415,6 +415,7 @@ export default function Purchases() {
             type="number"
             name="quantity"
             value={formData.quantity}
+            placeholder='Enter Quantity'
             onChange={handleInputChange}
             className="border border-gray-300 rounded-md p-2 w-full"
             required
@@ -427,6 +428,7 @@ export default function Purchases() {
             type="number"
             name="pricePerUnit"
             value={formData.pricePerUnit}
+            placeholder='Enter Price per Unit'
             onChange={handleInputChange}
             className="border border-gray-300 rounded-md p-2 w-full"
             required
@@ -439,6 +441,7 @@ export default function Purchases() {
             type="number"
             name="totalCost"
             value={formData.totalCost}
+            placeholder='Total Cost'
             readOnly
             className="border border-gray-300 rounded-md p-2 w-full"
           />

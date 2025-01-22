@@ -7,7 +7,7 @@ const CategoryPage = () => {
   const [formData, setFormData] = useState<Category>({
     name: '',
     description: '',
-    gstnumber: 0,
+    gstnumber: undefined,
   });
   const [editing, setEditing] = useState<boolean>(false);
   const [currentCategoryId, setCurrentCategoryId] = useState<string | null>(null);
@@ -43,7 +43,7 @@ const CategoryPage = () => {
     setFormData({
       name: '',
       description: '',
-      gstnumber: 0,
+      gstnumber: undefined,
     });
     setEditing(false);
     fetchCategories();
