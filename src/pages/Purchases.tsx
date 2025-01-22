@@ -45,26 +45,26 @@ export default function Purchases() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productsData, suppliersData, purchasesData] = await Promise.all([
-          ProductService.getAllProducts(),
-          SupplierService.getAllSuppliers(),
-          PurchaseService.getAllPurchases(),
-        ]);
-        setProducts(productsData);
-        setSuppliers(suppliersData);
-        setPurchases(purchasesData);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+   
     fetchData();
   }, []);
 
+  const fetchData = async () => {
+    try {
+      const [productsData, suppliersData, purchasesData] = await Promise.all([
+        ProductService.getAllProducts(),
+        SupplierService.getAllSuppliers(),
+        PurchaseService.getAllPurchases(),
+      ]);
+      setProducts(productsData);
+      setSuppliers(suppliersData);
+      setPurchases(purchasesData);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   const handleDeletePurchase = async (id: string) => {
@@ -81,6 +81,7 @@ export default function Purchases() {
       setActiveDropdown(null);
       toast.success("Purchase deleted successfully");
       console.log("Purchase deleted successfully");
+      fetchData();
 
     } catch (error) {
       console.error("Error occurred while deleting purchase:", error);
@@ -170,6 +171,7 @@ export default function Purchases() {
   
         // Show success toast
         toast.success('Purchase updated successfully!');
+        fetchData();
       } else {
         // Add a new purchase.
         const newPurchase = await PurchaseService.addPurchase(formData);
@@ -233,11 +235,11 @@ export default function Purchases() {
   
 
   const handleNavigateProduct = () => {
-    navigate('/products');
+    navigate('/addproduct');
   };
 
   const handleNavigateSuppliers = () => {
-    navigate('/suppliers');
+    navigate('/suppliers/add');
   };
 
 
@@ -296,7 +298,7 @@ export default function Purchases() {
                       {purchase?.supplierId?.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {purchase?.productId?.name}
+                      {purchase?.productId?.name||"Product not found"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {purchase?.quantity}

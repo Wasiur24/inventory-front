@@ -43,7 +43,7 @@ const CategoryPage = () => {
     setFormData({
       name: '',
       description: '',
-      gstnumber: '',
+      gstnumber: 0,
     });
     setEditing(false);
     fetchCategories();
