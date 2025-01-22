@@ -227,24 +227,23 @@ export default function Products() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {/* console.log(categories,"ijfgd"); */}
-             {categories?.length > 0 &&
-    categories.map((category) => {
-      console.log(category,"sdfghj");
-      if (category._id == product.category) {
-        // If a match is found
-        
-        return <span key={category._id}>{category.name || product.category.name}</span>;
-      }
-      return null; // Return null for non-matching items
-    })}
-  {/* Check if no matching category was found */}
-  {!categories.some((category) => category._id === product.category) && (
-    <span>Category not found</span>
-  )}
-                    </div>
-                  </td>
+  <div className="text-sm text-gray-500">
+    {categories?.length > 0 && 
+      categories.map((category) => {
+        if (category._id === product.category) {
+          // If a match is found, display the category name
+          return <span key={category._id}>{category.name}</span>;
+        }
+        return null; // Return null for non-matching items
+      })
+    }
+    {/* Check if no matching category was found */}
+    {categories?.length > 0 && !categories.some((category) => category._id === product.category) && (
+      <span>Category not found</span>
+    )}
+  </div>
+</td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       {product?.quantity}
