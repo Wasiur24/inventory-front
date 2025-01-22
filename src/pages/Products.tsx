@@ -40,6 +40,7 @@ export interface Product {
   weight: number;
 }
 
+
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<[]>([]);
@@ -82,20 +83,20 @@ export default function Products() {
     };
     fetchAllSuppliers();
   }, []);
-
+  const fetchProducts = async () => {
+    try {
+      const data = await ProductService. getAllProductsCategory();
+      setProducts(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Fetch products from API
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await ProductService.getAllProducts();
-        setProducts(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+   
 
     fetchProducts();
   }, []);
@@ -122,6 +123,7 @@ export default function Products() {
         setActiveDropdown(null); // Close dropdown after delete
         toast.success("Product deleted successfully");
         console.log("Product deleted successfully");
+        fetchProducts();
       } else {
         console.error("Failed to delete product, response:", response);
         toast.error("Failed to delete product");
@@ -152,11 +154,12 @@ export default function Products() {
 
       // Show success toast
       toast.success("Product updated successfully!");
-
+   
       // Close the modal and reset state
       setIsModalOpen(false);
       setEditingProduct(null);
       setUpdatedProduct(null);
+      fetchProducts();
     } catch (error) {
       console.error("Failed to update product:", error);
 
@@ -227,22 +230,14 @@ export default function Products() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-  <div className="text-sm text-gray-500">
-    {categories?.length > 0 && 
-      categories.map((category) => {
-        if (category._id === product.category) {
-          // If a match is found, display the category name
-          return <span key={category._id}>{category.name}</span>;
-        }
-        return null; // Return null for non-matching items
-      })
-    }
-    {/* Check if no matching category was found */}
-    {categories?.length > 0 && !categories.some((category) => category._id === product.category) && (
-      <span>Category not found</span>
-    )}
-  </div>
+                  <div className="text-sm text-gray-500">
+                  {product?.category?.name}
+  
+</div>
+
 </td>
+
+
 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">

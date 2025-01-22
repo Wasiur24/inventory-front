@@ -268,7 +268,7 @@ export default function Purchases() {
                     S.NO
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Supplier
+                    Supplier Organization
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Product
@@ -295,7 +295,7 @@ export default function Purchases() {
                       {index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {purchase?.supplierId?.name}
+                      {purchase?.supplierId?.name||"supplier not found"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {purchase?.productId?.name||"Product not found"}
