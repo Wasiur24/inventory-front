@@ -102,12 +102,23 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
         </tbody>
       </table>
 
-      <div className="mt-2 border-t border-black">
-        <div className="flex justify-between font-bold">
+      <div className="mt-2 border-t border-black ">
+      <div className="flex justify-between f border-b border-black ">
+          
+           <div className="flex justify-between">
+           <span className="text-[14px] pr-4 py-1 font-bold">No of Items:</span>
+           <span className="text-[14px] pr-4 py-1 font-bold">
+             {saleDetails.products.reduce((total, product) => total + product.quantitySold, 0)}
+           </span>
+         </div>
+         
+    
+        </div>
+        <div className="flex justify-between font-bold  ">
           <span>NET PAYABLE AMT:</span>
           <span>₹{saleDetails.totalSaleAmount.toFixed(2)}</span>
         </div>
-        <div className="text-xs mt-2">
+        <div className="text-xs mt-2 border-t border-black ">
           <div className="flex justify-between">
             <span>CGST AMT:</span>
             <span>₹{totalCGST.toFixed(2)}</span>
@@ -133,7 +144,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
         </ol>
       </div>
 
-      <div className="mt-4 text-center text-xs">
+      <div className="mt-4 text-center text-sm font-bold">
         <p>THANKS FOR SHOPPING WITH US</p>
         <p>PLEASE VISIT AGAIN</p>
       </div>
@@ -142,9 +153,18 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
         <p>NAME: {saleDetails.customerName}</p>
         <p>MOB.: {saleDetails.customerContact}</p>
       </div>
-      <div className="mt-4 text-xs border-t text-white pt-2">
+      <div className="mt-1 text-xs border-t border-black pt-2">
+      <div className="flex justify-center ">
+           <span className="text-sm pr-1 py-1 font-bold">* * Saved Rs. </span>
+           <span className="text-sm  py-1 font-bold">
+             {saleDetails.products.reduce((total, product) => total + product.mrpprice, 0)*saleDetails.products.reduce((total, product) => total + product.quantitySold, 0)- saleDetails.products.reduce((total, product) => total + product.sellingPrice, 0)*saleDetails.products.reduce((total, product) => total + product.quantitySold, 0)}
+           </span>
+           <span className="text-sm pr-4 py-1 font-bold">/- On MRP * * </span>
+         </div>
+      </div>
+      <div className="mt-1 text-xs border-t border-black pt-2 text-white ">
         <p>NAME: {saleDetails.customerName}</p>
-        <p>MOB.: {saleDetails.customerContact}</p>
+        {/* <p>MOB.: {saleDetails.customerContact}</p> */}
       </div>
     </div>
   );
