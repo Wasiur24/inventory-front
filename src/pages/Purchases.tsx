@@ -181,7 +181,7 @@ export default function Purchases() {
         // Show success toast for adding a new purchase
         toast.success('Purchase added successfully!');
       }
-  
+      fetchData();
       closeModal(); // Close the modal after successful submission.
     } catch (error) {
       console.error('Failed to save purchase:', error);

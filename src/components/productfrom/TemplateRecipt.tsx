@@ -118,7 +118,8 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
           </div>
           <div className="flex justify-between font-bold mt-1">
             <span>GRAND TOTAL:</span>
-            <span>₹{(saleDetails.totalSaleAmount + totalCGST + totalSGST).toFixed(2)}</span>
+            {/* <span>₹{(saleDetails.totalSaleAmount + totalCGST + totalSGST).toFixed(2)}</span> */}
+            <span>₹{(saleDetails.totalSaleAmount ).toFixed(2)}</span>
           </div>
         </div>
       </div>
@@ -138,6 +139,10 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
       </div>
 
       <div className="mt-4 text-xs border-t border-black pt-2">
+        <p>NAME: {saleDetails.customerName}</p>
+        <p>MOB.: {saleDetails.customerContact}</p>
+      </div>
+      <div className="mt-4 text-xs border-t text-white pt-2">
         <p>NAME: {saleDetails.customerName}</p>
         <p>MOB.: {saleDetails.customerContact}</p>
       </div>

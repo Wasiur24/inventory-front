@@ -96,7 +96,7 @@ export default function Sales() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200">
+          {/* <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -148,7 +148,65 @@ export default function Sales() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
+
+<table className="min-w-full divide-y divide-gray-200">
+  <thead className="bg-gray-50">
+    <tr>
+      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        S.No:
+      </th>
+      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Customer
+      </th>
+      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Total Sale Amount
+      </th>
+      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Payment Method
+      </th>
+      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Sale Date
+      </th>
+      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Actions
+      </th>
+    </tr>
+  </thead>
+  <tbody className="bg-white divide-y divide-gray-200">
+    {transactions
+      .slice()
+      .sort((a, b) => new Date(b.saleDate) - new Date(a.saleDate))
+      .map((transaction, index) => (
+        <tr key={transaction._id}>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {index + 1}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {transaction.customerName}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {transaction.totalSaleAmount.toFixed(2)}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {transaction.paymentMethod}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {new Date(transaction.saleDate).toLocaleString()}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <button
+              className="text-blue-500 hover:text-blue-700"
+              onClick={() => setSelectedTransaction(transaction)}
+            >
+              View
+            </button>
+          </td>
+        </tr>
+      ))}
+  </tbody>
+</table>
+
         </div>
       )}
 
