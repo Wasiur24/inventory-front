@@ -170,7 +170,16 @@ export default function Products() {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
+    onAfterPrint: () => {
+   
+      setIsViewModalOpen(false);
+      
+    },
+    
+    
+    
   });
+ 
 
   return (
     <div>
@@ -491,6 +500,8 @@ export default function Products() {
             <button
               className="float-right text-xs bg-gray-600 text-white px-2 py-1 rounded-md"
               onClick={handlePrint}
+             
+              
             >
               Print
             </button>

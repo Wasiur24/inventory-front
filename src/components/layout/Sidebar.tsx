@@ -29,7 +29,7 @@ export default function Sidebar() {
       <div className="flex flex-col h-full">
         <div className="flex items-center h-16 px-4 border-b border-gray-200">
           <Package className="h-8 w-8 text-blue-600" />
-          <span className="ml-2 text-xl font-semibold">Inventory</span>
+          <span className="ml-2 text-xl font-semibold">Society Store</span>
         </div>
         <nav className="flex-1 p-4 space-y-1">
           {menuItems

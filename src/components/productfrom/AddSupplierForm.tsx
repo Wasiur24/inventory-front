@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import SupplierService from '../../services/Supplier.service';
-
+import { useNavigate } from "react-router-dom";
 const AddSupplier: React.FC = () => {
   const [supplierData, setSupplierData] = useState({
     name: '',
@@ -14,7 +14,8 @@ const AddSupplier: React.FC = () => {
     pincode: '',
     country: '',
   });
-
+  
+const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setSupplierData({ ...supplierData, [name]: value });
@@ -36,6 +37,8 @@ const AddSupplier: React.FC = () => {
         pincode: '',
         country: '',
       });
+      navigate("/suppliers")
+
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Error adding supplier');
     }

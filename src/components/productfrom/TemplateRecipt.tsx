@@ -31,9 +31,9 @@ interface TemplateReciptProps {
 
 const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetails }) => {
   const shopDetails = {
-    name: "SHOP NAME RETAIL",
-    address: "Shop Address Line 1, City, State",
-    mobile: "+91-1234567890",
+    name: "Society Store",
+    address: "House No 313/92-B Shop No PVT -2 PLOT NO 6 TULSI NAGAR INDERLOK ",
+    mobile: "+91-9555162980",
     gstin: "09ABZFA5370M1ZJ",
   };
 

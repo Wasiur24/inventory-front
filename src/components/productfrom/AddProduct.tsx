@@ -121,8 +121,8 @@ const AddProduct: React.FC = () => {
 
       name === "purchasePrice" ||
       name === "sellingPrice" ||
-      name === "quantity" ||
-      name === "weight"
+      name === "quantity" 
+      // name === "weight"
     ) {
       return parseFloat(value) || 0;
     }
@@ -351,7 +351,7 @@ const AddProduct: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Weight (kg)
+                  Weight (kg) Optional
                 </label>
                 <input
                   name="weight"
