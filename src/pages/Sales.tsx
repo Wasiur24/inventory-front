@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import SalesService from "../services/Sales.service";
 import { useNavigate } from "react-router-dom";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 
 interface Product {
   productId: {
@@ -33,28 +35,29 @@ export default function Sales() {
     useState<Transaction | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchTransactions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        // Fetch sales data from the API
-        const response = await SalesService.getTotalSales();
-        const { sales } = response; // Extract `sales` from the API response
+      // Fetch sales data from the API
+      const response = await SalesService.getTotalSales();
+      const { sales } = response; // Extract `sales` from the API response
 
-        if (Array.isArray(sales)) {
-          setTransactions(sales); // Set the sales data to `transactions`
-        } else {
-          throw new Error("Unexpected data format");
-        }
-      } catch (err) {
-        console.error("Failed to fetch transactions:", err);
-        setError("Failed to fetch transactions. Please try again later.");
-      } finally {
-        setLoading(false);
+      if (Array.isArray(sales)) {
+        setTransactions(sales); // Set the sales data to `transactions`
+      } else {
+        throw new Error("Unexpected data format");
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+      setError("Failed to fetch transactions. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+   
 
     fetchTransactions();
   }, []);
@@ -62,6 +65,95 @@ export default function Sales() {
   const closeModal = () => {
     setSelectedTransaction(null);
   };
+
+
+
+
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+
+  const handleToggleDropdown = (id) => {
+    setOpenDropdownId((prevId) => (prevId === id ? null : id)); // Toggle dropdown
+  };
+
+  const showToast = (message, type = "success") => {
+    Toastify({
+      text: message,
+      duration: 3000,
+      close: true,
+      gravity: "top", // 'top' or 'bottom'
+      position: "right", // 'left', 'center' or 'right'
+      backgroundColor: type === "success" ? "green" : "red",
+    }).showToast();
+  };
+  
+  const handleUpdate = async (id, updateData) => {
+    try {
+      console.log("Updating transaction with ID:", id);
+      const updatedSale = await SalesService.updateSale(id, updateData); // Call the updateSale method
+      console.log("Updated Sale:", updatedSale);
+  
+      // Show success toast
+      showToast("Transaction updated successfully!");
+  
+      // Call fetchTransactions after success
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+  
+      // Show error toast
+      showToast("Failed to update the transaction.", "error");
+    }
+  };
+  
+  // const handleDelete = async (id, fetchTransactions) => {
+  //   try {
+  //     console.log("Deleting transaction with ID:", id);
+  //     await SalesService.deleteSale(id); // Call the deleteSale method
+  //     console.log("Transaction deleted successfully!");
+  
+  //     // Show success toast
+  //     showToast("Transaction deleted successfully!");
+  
+  //     // Call fetchTransactions after success
+  //     fetchTransactions();
+  //   } catch (error) {
+  //     console.error("Error deleting transaction:", error);
+  
+  //     // Show error toast
+  //     showToast("Failed to delete the transaction.", "error");
+  //   }
+  // };
+  const handleDelete = async (id) => {
+    // Toast function scoped within handleDelete
+    const showToast = (message, type = "success") => {
+      Toastify({
+        text: message,
+        duration: 3000,
+        close: true,
+        gravity: "top", // 'top' or 'bottom'
+        position: "right", // 'left', 'center' or 'right'
+        backgroundColor: type === "success" ? "green" : "red",
+      }).showToast();
+    };
+  
+    try {
+      console.log("Deleting transaction with ID:", id);
+      await SalesService.deleteSale(id); // Call the deleteSale method
+      console.log("Transaction deleted successfully!");
+  
+      // Show success toast
+      showToast("Transaction deleted successfully!");
+  
+      // Call fetchTransactions after success
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      fetchTransactions();
+      // Show error toast
+      // showToast("Failed to delete the transaction.", "error");
+    }
+  };
+  
 
   return (
     <div>
@@ -173,7 +265,74 @@ export default function Sales() {
       </th>
     </tr>
   </thead>
+
   <tbody className="bg-white divide-y divide-gray-200">
+      {transactions
+        .slice()
+        .sort((a, b) => new Date(b.saleDate) - new Date(a.saleDate))
+        .map((transaction, index) => (
+          <tr key={transaction._id}>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {index + 1}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {transaction.customerName}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {transaction.totalSaleAmount.toFixed(2)}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {transaction.paymentMethod}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {new Date(transaction.saleDate).toLocaleString()}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <button
+                className="text-blue-500 hover:text-blue-700 mr-4"
+                onClick={() => setSelectedTransaction(transaction)}
+              >
+                View
+              </button>
+              <div className="relative inline-block text-left">
+                <button
+                  className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                  onClick={() => handleToggleDropdown(transaction._id)}
+                >
+                  ...
+                </button>
+                {openDropdownId === transaction._id && (
+                  <div
+                    className="origin-top-right absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+                    role="menu"
+                    aria-orientation="vertical"
+                  >
+                    <div className="py-1" role="none">
+                      <button
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        role="menuitem"
+                        onClick={() => handleUpdate(transaction._id)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 w-full text-left"
+                        role="menuitem"
+                        onClick={() =>  handleDelete(transaction._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </td>
+          </tr>
+        ))}
+    </tbody>
+
+
+  {/* <tbody className="bg-white divide-y divide-gray-200">
     {transactions
       .slice()
       .sort((a, b) => new Date(b.saleDate) - new Date(a.saleDate))
@@ -204,7 +363,7 @@ export default function Sales() {
           </td>
         </tr>
       ))}
-  </tbody>
+  </tbody> */}
 </table>
 
         </div>

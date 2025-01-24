@@ -16,6 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Categories from './pages/Category'
 import UpdateSupplier from './pages/UpdateSuppliers';
+import SalesUser from './pages/SalesUser';
 
 const getToken = () => localStorage.getItem('token');
 const getUserRole = () => {
@@ -58,15 +59,15 @@ const AppRoutes = () => {
             <Route path="suppliers/add" element={<AddSupplier />} />
             <Route path="suppliers/update/:id" element={<UpdateSupplier />} />
             <Route path="purchases" element={<Purchases />} />
-            {/* <Route path="sales" element={<Sales />} /> */}
+            <Route path="sales" element={<Sales />} />
             <Route path="addproduct" element={<AddProduct />} />
           </Route>
 
           {/* Common routes */}
           <Route element={<ProtectedRoute allowedRoles={['admin', 'user']} />}>
             <Route path="selladd" element={<Selladd />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="sales" element={<Sales />} />
+            {/* <Route path="dashboard" element={<Dashboard />} /> */}
+            <Route path="salesuser" element={<SalesUser />} />
           </Route>
         </Route>
       </Routes>

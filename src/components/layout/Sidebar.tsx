@@ -9,7 +9,8 @@ const menuItems = [
   { icon: Tag, label: 'Categories', path: '/categories', roles: ['admin'] },
   { icon: Users, label: 'Suppliers', path: '/suppliers', roles: ['admin'] },
   { icon: ShoppingCart, label: 'Purchases', path: '/purchases', roles: ['admin'] },
-  { icon: BarChart, label: 'Sales', path: '/sales', roles: ['admin', 'user'] },
+  { icon: BarChart, label: 'Sales', path: '/sales', roles: ['admin'] },
+  { icon: BarChart, label: 'Sales', path: '/salesuser', roles: [ 'user'] },
 ];
 
 export default function Sidebar() {

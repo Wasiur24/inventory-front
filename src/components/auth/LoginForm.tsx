@@ -27,7 +27,7 @@ export default function LoginForm() {
       const user = JSON.parse(localStorage.getItem("user") || "{}"); // Retrieve user data from local storage
   
       if (user.role === "user") {
-        navigate("/sales"); // Navigate to /sales if role is "user"
+        navigate("/salesuser"); // Navigate to /sales if role is "user"
       } else {
         navigate("/dashboard"); // Navigate to /dashboard for other roles
       }
