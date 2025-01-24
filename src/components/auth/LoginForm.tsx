@@ -11,16 +11,31 @@ export default function LoginForm() {
   });
   const [error, setError] = useState("");
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     await UserService.login(formData);
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     setError(err.response?.data?.message || "Login failed. Please try again.");
+  //   }
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await UserService.login(formData);
-      navigate("/dashboard");
-    } catch (err) {
+      await UserService.login(formData); // Perform login
+      const user = JSON.parse(localStorage.getItem("user") || "{}"); // Retrieve user data from local storage
+  
+      if (user.role === "user") {
+        navigate("/sales"); // Navigate to /sales if role is "user"
+      } else {
+        navigate("/dashboard"); // Navigate to /dashboard for other roles
+      }
+    } catch (err: any) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
     }
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

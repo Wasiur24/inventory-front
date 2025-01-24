@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Package, Users, ShoppingCart, BarChart, LogOut,Tag } from 'lucide-react';
 
 const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', roles: ['admin', 'user'] },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', roles: ['admin'] },
   { icon: Package, label: 'Products', path: '/products', roles: ['admin'] },
   { icon: Tag, label: 'Categories', path: '/categories', roles: ['admin'] },
   { icon: Users, label: 'Suppliers', path: '/suppliers', roles: ['admin'] },
