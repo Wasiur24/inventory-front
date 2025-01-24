@@ -11,7 +11,6 @@ interface Product {
     price: number;
     sku: string;
   };
-  sku: string;
   quantitySold: number;
   totalAmount: number;
   _id: string;
@@ -29,10 +28,15 @@ interface Transaction {
 
 export default function Sales() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filterOption, setFilterOption] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(6);
   const navigate = useNavigate();
 
   const fetchTransactions = async () => {
@@ -40,12 +44,12 @@ export default function Sales() {
       setLoading(true);
       setError(null);
 
-      // Fetch sales data from the API
       const response = await SalesService.getTotalSales();
-      const { sales } = response; // Extract `sales` from the API response
+      const { sales } = response;
 
       if (Array.isArray(sales)) {
-        setTransactions(sales); // Set the sales data to `transactions`
+        setTransactions(sales);
+        setFilteredTransactions(sales);
       } else {
         throw new Error("Unexpected data format");
       }
@@ -56,104 +60,74 @@ export default function Sales() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-   
 
+  useEffect(() => {
     fetchTransactions();
   }, []);
 
-  const closeModal = () => {
-    setSelectedTransaction(null);
+  useEffect(() => {
+    filterTransactions();
+  }, [searchQuery, filterOption, transactions]);
+
+  const filterTransactions = () => {
+    let filtered = transactions;
+
+    if (searchQuery) {
+      filtered = filtered.filter(transaction =>
+        transaction.customerName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    if (filterOption === "Today") {
+      filtered = filtered.filter(transaction => {
+        const saleDate = new Date(transaction.saleDate);
+        return saleDate.toDateString() === today.toDateString();
+      });
+    } else if (filterOption === "This Week") {
+      filtered = filtered.filter(transaction => {
+        const saleDate = new Date(transaction.saleDate);
+        return saleDate >= startOfWeek;
+      });
+    } else if (filterOption === "This Month") {
+      filtered = filtered.filter(transaction => {
+        const saleDate = new Date(transaction.saleDate);
+        return saleDate >= startOfMonth;
+      });
+    }
+
+    setFilteredTransactions(filtered);
   };
 
-
-
-
-  const [openDropdownId, setOpenDropdownId] = useState(null);
-
-  const handleToggleDropdown = (id) => {
-    setOpenDropdownId((prevId) => (prevId === id ? null : id)); // Toggle dropdown
-  };
-
-  const showToast = (message, type = "success") => {
+  const showToast = (message: string, type = "success") => {
     Toastify({
       text: message,
       duration: 3000,
       close: true,
-      gravity: "top", // 'top' or 'bottom'
-      position: "right", // 'left', 'center' or 'right'
+      gravity: "top",
+      position: "right",
       backgroundColor: type === "success" ? "green" : "red",
     }).showToast();
   };
-  
-  const handleUpdate = async (id, updateData) => {
-    try {
-      console.log("Updating transaction with ID:", id);
-      const updatedSale = await SalesService.updateSale(id, updateData); // Call the updateSale method
-      console.log("Updated Sale:", updatedSale);
-  
-      // Show success toast
-      showToast("Transaction updated successfully!");
-  
-      // Call fetchTransactions after success
-      fetchTransactions();
-    } catch (error) {
-      console.error("Error updating transaction:", error);
-  
-      // Show error toast
-      showToast("Failed to update the transaction.", "error");
-    }
+  const closeModal = () => {
+    setSelectedTransaction(null);
   };
-  
-  // const handleDelete = async (id, fetchTransactions) => {
-  //   try {
-  //     console.log("Deleting transaction with ID:", id);
-  //     await SalesService.deleteSale(id); // Call the deleteSale method
-  //     console.log("Transaction deleted successfully!");
-  
-  //     // Show success toast
-  //     showToast("Transaction deleted successfully!");
-  
-  //     // Call fetchTransactions after success
-  //     fetchTransactions();
-  //   } catch (error) {
-  //     console.error("Error deleting transaction:", error);
-  
-  //     // Show error toast
-  //     showToast("Failed to delete the transaction.", "error");
-  //   }
-  // };
-  const handleDelete = async (id) => {
-    // Toast function scoped within handleDelete
-    const showToast = (message, type = "success") => {
-      Toastify({
-        text: message,
-        duration: 3000,
-        close: true,
-        gravity: "top", // 'top' or 'bottom'
-        position: "right", // 'left', 'center' or 'right'
-        backgroundColor: type === "success" ? "green" : "red",
-      }).showToast();
-    };
-  
+
+  const handleDelete = async (id: string) => {
     try {
-      console.log("Deleting transaction with ID:", id);
-      await SalesService.deleteSale(id); // Call the deleteSale method
-      console.log("Transaction deleted successfully!");
-  
-      // Show success toast
+      await SalesService.deleteSale(id);
       showToast("Transaction deleted successfully!");
-  
-      // Call fetchTransactions after success
       fetchTransactions();
     } catch (error) {
-      console.error("Error deleting transaction:", error);
-      fetchTransactions();
-      // Show error toast
-      // showToast("Failed to delete the transaction.", "error");
+      showToast("Failed to delete the transaction.", "error");
     }
   };
-  
+
+  const totalSaleAmount = filteredTransactions.reduce((total, sale) => total + sale.totalSaleAmount, 0);
 
   return (
     <div>
@@ -169,207 +143,116 @@ export default function Sales() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-sm font-medium text-gray-500">
-            Total Transactions
-          </h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">
-            {transactions.length}
-          </p>
+          <h3 className="text-sm font-medium text-gray-500">Total Transactions</h3>
+          <p className="mt-2 text-3xl font-semibold text-gray-900">{filteredTransactions.length}</p>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h3 className="text-sm font-medium text-gray-500">Total Sale Amount</h3>
+          <p className="mt-2 text-3xl font-semibold text-gray-900">₹ {totalSaleAmount.toFixed(2)}</p>
         </div>
       </div>
+
+     <div className="flex  justify-between items-center mb-6">
+     <div className="mb-6">
+        <input
+          type="text"
+          className="px-4 py-2 border rounded-md"
+          placeholder="Search by Customer"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      <div className="mb-6">
+        <select
+          className="px-4 py-2 border rounded-md"
+          value={filterOption}
+          onChange={(e) => setFilterOption(e.target.value)}
+        >
+          <option value="All">All Transactions</option>
+          <option value="Today">Today's Transactions</option>
+          <option value="This Week">This Week</option>
+          <option value="This Month">This Month</option>
+        </select>
+      </div>
+     </div>
 
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : error ? (
         <div className="text-center text-red-500">{error}</div>
-      ) : transactions.length === 0 ? (
-        <div className="text-center text-gray-500">
-          No transactions available.
-        </div>
+      ) : filteredTransactions.length === 0 ? (
+        <div className="text-center text-gray-500">No transactions available.</div>
       ) : (
         <div className="bg-white rounded-lg shadow-sm">
-          {/* <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  S.No:
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total Sale Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Payment Method
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sale Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500">S.No</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500">Customer</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500">Total Sale Amount</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500">Payment Method</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500">Sale Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {transactions.map((transaction, index) => (
-                <tr key={transaction._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {index + 1}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction.customerName}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction.totalSaleAmount.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction.paymentMethod}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(transaction.saleDate).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {filteredTransactions
+                .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+                .map((transaction, index) => (
+                  <tr key={transaction._id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {(currentPage - 1) * pageSize + index + 1}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {transaction.customerName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      ₹ {transaction.totalSaleAmount.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {transaction.paymentMethod}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(transaction.saleDate).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <button
-                      className="text-blue-500 hover:text-blue-700"
-                      onClick={() => setSelectedTransaction(transaction)}
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-
-<table className="min-w-full divide-y divide-gray-200">
-  <thead className="bg-gray-50">
-    <tr>
-      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        S.No:
-      </th>
-      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Customer
-      </th>
-      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Total Sale Amount
-      </th>
-      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Payment Method
-      </th>
-      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Sale Date
-      </th>
-      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Actions
-      </th>
-    </tr>
-  </thead>
-
-  <tbody className="bg-white divide-y divide-gray-200">
-      {transactions
-        .slice()
-        .sort((a, b) => new Date(b.saleDate) - new Date(a.saleDate))
-        .map((transaction, index) => (
-          <tr key={transaction._id}>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {index + 1}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {transaction.customerName}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {transaction.totalSaleAmount.toFixed(2)}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {transaction.paymentMethod}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {new Date(transaction.saleDate).toLocaleString()}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <button
-                className="text-blue-500 hover:text-blue-700 mr-4"
-                onClick={() => setSelectedTransaction(transaction)}
-              >
-                View
-              </button>
-              {/* <div className="relative inline-block text-left">
-                <button
-                  className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
-                  onClick={() => handleToggleDropdown(transaction._id)}
-                >
-                  ...
-                </button>
-                {openDropdownId === transaction._id && (
-                  <div
-                    className="origin-top-right absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                    role="menu"
-                    aria-orientation="vertical"
-                  >
-                    <div className="py-1" role="none">
-                      <button
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        role="menuitem"
-                        onClick={() => handleUpdate(transaction._id)}
-                      >
-                        Update
-                      </button>
-                      <button
-                        className="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 w-full text-left"
-                        role="menuitem"
-                        onClick={() =>  handleDelete(transaction._id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div> */}
-            </td>
-          </tr>
-        ))}
-    </tbody>
-
-
-  {/* <tbody className="bg-white divide-y divide-gray-200">
-    {transactions
-      .slice()
-      .sort((a, b) => new Date(b.saleDate) - new Date(a.saleDate))
-      .map((transaction, index) => (
-        <tr key={transaction._id}>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {index + 1}
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {transaction.customerName}
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {transaction.totalSaleAmount.toFixed(2)}
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {transaction.paymentMethod}
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {new Date(transaction.saleDate).toLocaleString()}
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <button
               className="text-blue-500 hover:text-blue-700"
               onClick={() => setSelectedTransaction(transaction)}
             >
               View
             </button>
-          </td>
-        </tr>
-      ))}
-  </tbody> */}
-</table>
+                      {/* <button
+                        className="text-red-600 hover:text-red-800 ml-4"
+                        onClick={() => handleDelete(transaction._id)}
+                      >
+                        Delete
+                      </button> */}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
 
+          <div className="flex justify-center mt-4">
+            <button
+              className="px-4 py-2 bg-gray-300 rounded-md"
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            >
+              Prev
+            </button>
+            <button
+              className="px-4 py-2 bg-gray-300 rounded-md ml-4"
+              onClick={() => setCurrentPage(Math.min(Math.ceil(filteredTransactions.length / pageSize), currentPage + 1))}
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
 
-      {selectedTransaction && (
+{selectedTransaction && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2">
             <h2 className="text-xl font-semibold mb-4">Transaction Details</h2>
