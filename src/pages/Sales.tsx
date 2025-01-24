@@ -142,13 +142,13 @@ export default function Sales() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-4">
           <h3 className="text-sm font-medium text-gray-500">Total Transactions</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">{filteredTransactions.length}</p>
+          <p className="mt-2 text-[16px]  font-semibold text-gray-900">{filteredTransactions.length}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-4">
           <h3 className="text-sm font-medium text-gray-500">Total Sale Amount</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">₹ {totalSaleAmount.toFixed(2)}</p>
+          <p className="mt-2 text-[16px] font-semibold text-gray-900">₹ {totalSaleAmount.toFixed(2)}</p>
         </div>
       </div>
 

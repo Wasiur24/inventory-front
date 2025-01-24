@@ -57,6 +57,7 @@ const CategoryPage = () => {
     });
     setEditing(true);
     setCurrentCategoryId(category._id);
+    
   };
 
   const handleDelete = async (id: string) => {
