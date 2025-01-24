@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import { format } from "date-fns";
 
@@ -29,7 +27,10 @@ interface TemplateReciptProps {
   };
 }
 
-const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetails }) => {
+const TemplateRecipt: React.FC<TemplateReciptProps> = ({
+  componentref,
+  saleDetails,
+}) => {
   const shopDetails = {
     name: "Society Store",
     address: "House No 313/92-B Shop No PVT -2 PLOT NO 6 TULSI NAGAR INDERLOK ",
@@ -43,8 +44,8 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
   const calculateGSTAmounts = () => {
     let totalCGST = 0;
     let totalSGST = 0;
-
-    saleDetails.products.forEach(product => {
+    console.log(saleDetails);
+    saleDetails?.products?.forEach((product) => {
       if (product.gstnumber) {
         const gstRate = product.gstnumber / 2; // Split into CGST and SGST
         const gstAmount = (product.totalAmount * gstRate) / 100;
@@ -59,7 +60,10 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
   const { totalCGST, totalSGST } = calculateGSTAmounts();
 
   return (
-    <div ref={componentref} className="max-w-[80mm] mx-auto p-2 bg-white font-mono text-sm">
+    <div
+      ref={componentref}
+      className="max-w-[80mm] mx-auto p-2 bg-white font-mono text-sm"
+    >
       <div className="text-center mb-4">
         <h1 className="text-xl font-bold">{shopDetails.name}</h1>
         <p className="text-xs">{shopDetails.address}</p>
@@ -103,16 +107,18 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
       </table>
 
       <div className="mt-2 border-t border-black ">
-      <div className="flex justify-between f border-b border-black ">
-          
-           <div className="flex justify-between">
-           <span className="text-[14px] pr-4 py-1 font-bold">No of Items:</span>
-           <span className="text-[14px] pr-4 py-1 font-bold">
-             {saleDetails.products.reduce((total, product) => total + product.quantitySold, 0)}
-           </span>
-         </div>
-         
-    
+        <div className="flex justify-between f border-b border-black ">
+          <div className="flex justify-between">
+            <span className="text-[14px] pr-4 py-1 font-bold">
+              No of Items:
+            </span>
+            <span className="text-[14px] pr-4 py-1 font-bold">
+              {saleDetails.products.reduce(
+                (total, product) => total + product.quantitySold,
+                0
+              )}
+            </span>
+          </div>
         </div>
         <div className="flex justify-between font-bold  ">
           <span>NET PAYABLE AMT:</span>
@@ -130,7 +136,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
           <div className="flex justify-between font-bold mt-1">
             <span>GRAND TOTAL:</span>
             {/* <span>₹{(saleDetails.totalSaleAmount + totalCGST + totalSGST).toFixed(2)}</span> */}
-            <span>₹{(saleDetails.totalSaleAmount ).toFixed(2)}</span>
+            <span>₹{saleDetails.totalSaleAmount.toFixed(2)}</span>
           </div>
         </div>
       </div>
@@ -154,13 +160,28 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({ componentref, saleDetai
         <p>MOB.: {saleDetails.customerContact}</p>
       </div>
       <div className="mt-1 text-xs border-t border-black pt-2">
-      <div className="flex justify-center ">
-           <span className="text-sm pr-1 py-1 font-bold">* * Saved Rs. </span>
-           <span className="text-sm  py-1 font-bold">
-             {saleDetails.products.reduce((total, product) => total + product.mrpprice, 0)*saleDetails.products.reduce((total, product) => total + product.quantitySold, 0)- saleDetails.products.reduce((total, product) => total + product.sellingPrice, 0)*saleDetails.products.reduce((total, product) => total + product.quantitySold, 0)}
-           </span>
-           <span className="text-sm pr-4 py-1 font-bold">/- On MRP * * </span>
-         </div>
+        <div className="flex justify-center ">
+          <span className="text-sm pr-1 py-1 font-bold">* * Saved Rs. </span>
+          <span className="text-sm  py-1 font-bold">
+            {saleDetails.products.reduce(
+              (total, product) => total + product.mrpprice,
+              0
+            ) *
+              saleDetails.products.reduce(
+                (total, product) => total + product.quantitySold,
+                0
+              ) -
+              saleDetails.products.reduce(
+                (total, product) => total + product.sellingPrice,
+                0
+              ) *
+                saleDetails.products.reduce(
+                  (total, product) => total + product.quantitySold,
+                  0
+                )}
+          </span>
+          <span className="text-sm pr-4 py-1 font-bold">/- On MRP * * </span>
+        </div>
       </div>
       <div className="mt-1 text-xs border-t border-black pt-2 text-white ">
         <p>NAME: {saleDetails.customerName}</p>
