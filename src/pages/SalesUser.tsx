@@ -160,7 +160,7 @@ export default function Sales() {
           <h3 className="text-sm font-medium text-gray-500">
             Total Transactions
           </h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">
+          <p className="mt-2 text-[20px] font-semibold text-gray-900">
             {filteredTransactions.length}
           </p>
         </div>
@@ -168,7 +168,7 @@ export default function Sales() {
           <h3 className="text-sm font-medium text-gray-500">
             Total Sale Amount
           </h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">
+          <p className="mt-2 text-[20px] font-semibold text-gray-900">
             ₹ {totalSaleAmount.toFixed(2)}
           </p>
         </div>
@@ -332,8 +332,9 @@ export default function Sales() {
             >
               Close
             </button>
+            
             <button
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="mt-4 ml-5 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               onClick={printReceipt}
             >
               Print
