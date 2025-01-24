@@ -26,6 +26,9 @@ interface Transaction {
   paymentMethod: "Cash" | "Credit Card" | "Debit Card" | "UPI" | "Other";
   customerName: string;
   customerContact: string;
+  savedAmount: string;
+  sgstAmount: string;
+  cgstAmount: string;
 }
 
 export default function Sales() {
@@ -317,7 +320,12 @@ export default function Sales() {
               <strong>Sale Date:</strong>{" "}
               {new Date(selectedTransaction.saleDate).toLocaleString()}
             </p>
+            
             <h3 className="text-lg font-medium mt-4 mb-2">Products:</h3>
+            <p className="mb-2">
+              <strong>Save m</strong>{" "}
+              {selectedTransaction.savedAmount}
+            </p>
             <ul>
               {selectedTransaction?.products.map((product) => (
                 <li key={product._id} className="mb-1">

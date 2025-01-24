@@ -164,12 +164,35 @@ const Selladd: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-
+  
     try {
       setIsSubmitting(true);
-      const response = await SalesService.createSale(saleDetails);
+      
+      // Calculate GST and saved amounts
+      let totalCGST = 0;
+      let totalSGST = 0;
+      let savedAmount = 0;
+  
+      saleDetails.products.forEach(product => {
+        if (product.gstnumber) {
+          const gstRate = product.gstnumber / 2;
+          const gstAmount = (product.totalAmount * gstRate) / 100;
+          totalCGST += gstAmount;
+          totalSGST += gstAmount;
+        }
+        savedAmount += (product.mrpprice - product.sellingPrice) * product.quantitySold;
+      });
+  
+      const saleData = {
+        ...saleDetails,
+        cgstAmount: totalCGST,
+        sgstAmount: totalSGST,
+        savedAmount: savedAmount
+      };
+  
+      const response = await SalesService.createSale(saleData);
       printReceipt();
-
+  
       // Reset form and go back to step 1
       setSaleDetails({
         products: [
@@ -198,6 +221,7 @@ const Selladd: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -395,7 +419,7 @@ const Selladd: React.FC = () => {
         )}
       </form>
 
-      <div style={{ display: "none" }}>
+      <div style={{ display: "block" }}>
         <TemplateRecipt componentref={receiptRef} saleDetails={saleDetails} />
       </div>
     </div>
