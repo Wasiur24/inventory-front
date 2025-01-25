@@ -90,7 +90,7 @@ export default function UpdateSupplier() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Phone</label>
                     <input
-                      type="number" 
+                      type="text"
                       name="phone"
                       value={updatedSupplier.phone}
                       onChange={handleChange}
@@ -131,7 +131,7 @@ export default function UpdateSupplier() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Pincode</label>
                     <input
-                      type="number"
+                      type="text"
                       name="pincode"
                       value={updatedSupplier.pincode}
                       maxLength={6}
