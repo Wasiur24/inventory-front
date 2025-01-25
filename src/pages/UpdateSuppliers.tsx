@@ -82,7 +82,7 @@ export default function UpdateSupplier() {
                     <input
                       type="email"
                       name="email"
-                      value={updatedSupplier.email}
+                      value={updatedSupplier.email.toLowerCase()}
                       onChange={handleChange}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                     />
@@ -94,6 +94,7 @@ export default function UpdateSupplier() {
                       name="phone"
                       value={updatedSupplier.phone}
                       onChange={handleChange}
+                      maxLength={10}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                     />
                   </div>
@@ -133,6 +134,7 @@ export default function UpdateSupplier() {
                       type="text"
                       name="pincode"
                       value={updatedSupplier.pincode}
+                      maxLength={6}
                       onChange={handleChange}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                     />
