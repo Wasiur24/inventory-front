@@ -6,9 +6,8 @@ import Barcode from "react-barcode";
 import { getAllCategories } from "../services/Category.service";
 import { useReactToPrint } from "react-to-print";
 import SupplierService from "../services/Supplier.service";
-import {  toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export interface Category {
   id: string;
@@ -40,7 +39,6 @@ export interface Product {
   weight: number;
 }
 
-
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<[]>([]);
@@ -60,7 +58,7 @@ export default function Products() {
       try {
         const data = await getAllCategories();
         setCategories(data);
-        console.log(data,"cate`");
+        console.log(data, "cate`");
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       } finally {
@@ -84,10 +82,11 @@ export default function Products() {
     fetchAllSuppliers();
   }, []);
   const fetchProducts = async () => {
+    console.log("erdtfvbhjnkm");
     try {
-      const data = await ProductService. getAllProductsCategory();
+      const data = await ProductService.getAllProductsCategory();
+      console.log(data, "-----------------");
       setProducts(data);
-      console.log(data);
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
@@ -96,14 +95,14 @@ export default function Products() {
   };
   // Fetch products from API
   useEffect(() => {
-   
-
     fetchProducts();
   }, []);
 
   // Handle delete product
   const handleDeleteProduct = async (id: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
 
     if (!confirmDelete) {
       return; // If user cancels, do nothing
@@ -116,7 +115,7 @@ export default function Products() {
       const response = await ProductService.deleteProduct(id);
 
       // Check if the response contains the success message
-      if (response.message === 'Product deleted successfully') {
+      if (response.message === "Product deleted successfully") {
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product._id !== id)
         );
@@ -133,8 +132,7 @@ export default function Products() {
       toast.error("Error occurred while deleting product");
     }
   };
-  console.log(categories,"ijfgd"); 
-
+  console.log(categories, "ijfgd");
 
   // Handle save product
   const handleSaveProduct = async () => {
@@ -154,7 +152,7 @@ export default function Products() {
 
       // Show success toast
       toast.success("Product updated successfully!");
-   
+
       // Close the modal and reset state
       setIsModalOpen(false);
       setEditingProduct(null);
@@ -171,15 +169,9 @@ export default function Products() {
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     onAfterPrint: () => {
-   
       setIsViewModalOpen(false);
-      
     },
-    
-    
-    
   });
- 
 
   return (
     <div>
@@ -225,6 +217,7 @@ export default function Products() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
+              {console.log(products, "product")}
               {products?.map((product, index) => (
                 <tr key={product._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -239,14 +232,10 @@ export default function Products() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
-                  {product?.category?.name}
-  
-</div>
-
-</td>
-
-
+                    <div className="text-sm text-gray-500">
+                      {product?.category?.name}
+                    </div>
+                  </td>
 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
@@ -260,10 +249,11 @@ export default function Products() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product?.quantity > 0
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        product?.quantity > 0
                           ? "bg-green-100 text-green-800"
                           : "bg-red-100 text-red-800"
-                        }`}
+                      }`}
                     >
                       {product.quantity > 0 ? "In Stock" : "Out of Stock"}
                     </span>
@@ -310,8 +300,6 @@ export default function Products() {
                           >
                             Delete
                           </button>
-
-
                         </div>
                       )}
                     </div>
@@ -386,7 +374,10 @@ export default function Products() {
                 </select>
               </div>
               <div className="mt-1 block w-full">
-                <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="supplier"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Suppliers
                 </label>
                 <select
@@ -402,17 +393,20 @@ export default function Products() {
                   required
                 >
                   <option value={updatedProduct.supplier} disabled>
-                    {suppliers.find((supplier) => supplier._id === updatedProduct.supplier)?.name || "Select a supplier"}
+                    {suppliers.find(
+                      (supplier) => supplier._id === updatedProduct.supplier
+                    )?.name || "Select a supplier"}
                   </option>
 
                   {suppliers.map((supplier) => (
-                    <option key={supplier._id} value={supplier._id}> {/* Set value to supplier's _id */}
+                    <option key={supplier._id} value={supplier._id}>
+                      {" "}
+                      {/* Set value to supplier's _id */}
                       {supplier.name}
                     </option>
                   ))}
                 </select>
               </div>
-
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
@@ -500,8 +494,6 @@ export default function Products() {
             <button
               className="float-right text-xs bg-gray-600 text-white px-2 py-1 rounded-md"
               onClick={handlePrint}
-             
-              
             >
               Print
             </button>
@@ -510,7 +502,6 @@ export default function Products() {
               <p className="text-white py-1">
                 <strong>SKU:</strong> {viewingProduct.sku}
               </p>
-              
             </div>
             <button
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"

@@ -118,16 +118,16 @@ const ProductService = {
     return response.data.map((product: any) => ({
       ...product,
       category: {
-        id: product.category._id,
-        name: product.category.name,
-        description: product.category.description,
-        gstnumber: product.category.gstnumber,
+        id: product?.category?._id,
+        name: product?.category?.name,
+        description: product?.category?.description,
+        gstnumber: product?.category?.gstnumber,
       },
       supplier: product.supplier
         ? {
-            id: product.supplier._id,
-            name: product.supplier.name,
-            contactInfo: product.supplier.contactInfo, // Adjust based on supplier fields
+            id: product?.supplier?._id,
+            name: product?.supplier?.name,
+            contactInfo: product?.supplier?.contactInfo, // Adjust based on supplier fields
           }
         : undefined,
     }));
