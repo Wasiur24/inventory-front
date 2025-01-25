@@ -85,9 +85,10 @@ export default function Products() {
   }, []);
   const fetchProducts = async () => {
     try {
-      const data = await ProductService. getAllProductsCategory();
+      // const data = await ProductService. getAllProductsCategory();
+      const data = await ProductService.getAllProducts();
       setProducts(data);
-      console.log(data);
+      console.log(data,"dgfggf");
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
@@ -207,9 +208,9 @@ export default function Products() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Category
-                </th>
+                </th> */}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Quantity
                 </th>
@@ -238,13 +239,13 @@ export default function Products() {
                       {product?.name}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  {/* <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">
                   {product?.category?.name}
   
 </div>
 
-</td>
+</td> */}
 
 
 
