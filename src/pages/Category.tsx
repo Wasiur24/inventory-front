@@ -155,8 +155,6 @@
 // };
 
 // export default CategoryPage;
-
-
 import React, { useState, useEffect } from 'react';
 import {
   TextField,
@@ -171,6 +169,7 @@ import {
   TableRow,
   Paper,
   Typography,
+  TablePagination,
 } from '@mui/material';
 import {
   createCategory,
@@ -184,6 +183,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const CategoryPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState<Category>({
     name: '',
     description: '',
@@ -191,10 +191,18 @@ const CategoryPage: React.FC = () => {
   });
   const [editing, setEditing] = useState<boolean>(false);
   const [currentCategoryId, setCurrentCategoryId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [gstFilter, setGstFilter] = useState({ min: 0, max: 100 });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [categories, searchTerm, gstFilter]);
 
   const fetchCategories = async () => {
     try {
@@ -226,7 +234,6 @@ const CategoryPage: React.FC = () => {
         toast.success('Category created successfully!');
       }
 
-      // Reset the form
       setFormData({
         name: '',
         description: '',
@@ -265,11 +272,34 @@ const CategoryPage: React.FC = () => {
     }
   };
 
+  const applyFilters = () => {
+    const filtered = categories.filter(
+      (category) =>
+        category.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        category.gstnumber >= gstFilter.min &&
+        category.gstnumber <= gstFilter.max
+    );
+    setFilteredCategories(filtered);
+  };
+
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
         Category Management
       </Typography>
+
+      {/* Filters */}
+    
+
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -316,44 +346,92 @@ const CategoryPage: React.FC = () => {
           {editing ? 'Update Category' : 'Create Category'}
         </Button>
       </form>
+    
 
+    
       <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+      <Grid container spacing={2} sx={{ marginBottom: 2 }} className='px-4 py-4 mt-7 border-b-2 border-gray-300'>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            label="Search"
+            variant="outlined"
+            fullWidth
+            
+            placeholder='Search by name'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Grid>
+      
+         <Grid item xs={6} sm={4}>
+          <TextField
+            label="Min GST %"
+            variant="outlined"
+            fullWidth
+            type="number"
+            value={gstFilter.min}
+            minRows={0}
+            onChange={(e) => setGstFilter({ ...gstFilter, min: Number(e.target.value) })}
+          />
+        </Grid>
+        <Grid item xs={6} sm={4}>
+          <TextField
+            label="Max GST %"
+            variant="outlined"
+            fullWidth
+            type="number"
+            value={gstFilter.max}
+            onChange={(e) => setGstFilter({ ...gstFilter, max: Number(e.target.value) })}
+          />
+        </Grid> 
+      </Grid>
         <Table>
+          
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>GST Number</TableCell>
+              <TableCell>GST %</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories.map((category) => (
-              <TableRow key={category._id}>
-                <TableCell>{category.name}</TableCell>
-                <TableCell>{category.description}</TableCell>
-                <TableCell>{category.gstnumber}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => handleEdit(category)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    sx={{ marginLeft: 1 }}
-                    onClick={() => handleDelete(category._id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredCategories
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((category) => (
+                <TableRow key={category._id}>
+                  <TableCell>{category.name}</TableCell>
+                  <TableCell>{category.description}</TableCell>
+                  <TableCell>{category.gstnumber}%</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleEdit(category)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      sx={{ marginLeft: 1 }}
+                      onClick={() => handleDelete(category._id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={filteredCategories.length}
+          page={page}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+        />
       </TableContainer>
     </Box>
   );
