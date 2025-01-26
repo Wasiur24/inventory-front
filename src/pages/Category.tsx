@@ -537,60 +537,72 @@ const CategoryPage: React.FC = () => {
       </TableContainer>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            {editing ? 'Edit Category' : 'Add Category'}
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              label="Name"
-              variant="outlined"
-              fullWidth
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Description"
-              variant="outlined"
-              fullWidth
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              required
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="GST %"
-              variant="outlined"
-              fullWidth
-              name="gstnumber"
-              type="number"
-              value={formData.gstnumber || ''}
-              onChange={handleInputChange}
-              required
-              sx={{ marginBottom: 2 }}
-            />
-            <Button type="submit" variant="contained" color="primary">
-              {editing ? 'Update Category' : 'Create Category'}
-            </Button>
-          </form>
-        </Box>
-      </Modal>
+  <Box
+    sx={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: 'background.paper',
+      boxShadow: 24,
+      p: 4,
+      borderRadius: 2,
+    }}
+  >
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Typography variant="h6" gutterBottom>
+        {editing ? 'Edit Category' : 'Add Category'}
+      </Typography>
+      <Button
+        onClick={() => setModalOpen(false)}
+        variant="contained"
+        color="secondary"
+        size="small"
+        sx={{ textTransform: 'none' }}
+      >
+        Close
+      </Button>
+    </Box>
+    <form onSubmit={handleSubmit}>
+      <TextField
+        label="Name"
+        variant="outlined"
+        fullWidth
+        name="name"
+        value={formData.name}
+        onChange={handleInputChange}
+        required
+        sx={{ marginBottom: 2 }}
+      />
+      <TextField
+        label="Description"
+        variant="outlined"
+        fullWidth
+        name="description"
+        value={formData.description}
+        onChange={handleInputChange}
+        required
+        sx={{ marginBottom: 2 }}
+      />
+      <TextField
+        label="GST %"
+        variant="outlined"
+        fullWidth
+        name="gstnumber"
+        type="number"
+        value={formData.gstnumber || ''}
+        onChange={handleInputChange}
+        required
+        sx={{ marginBottom: 2 }}
+      />
+      <Button type="submit" variant="contained" color="primary">
+        {editing ? 'Update Category' : 'Create Category'}
+      </Button>
+    </form>
+  </Box>
+</Modal>
+
     </Box>
   );
 };
