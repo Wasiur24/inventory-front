@@ -419,7 +419,7 @@ const Selladd: React.FC = () => {
         )}
       </form>
 
-      <div style={{ display: "block" }}>
+      <div style={{ display: "none" }}>
         <TemplateRecipt componentref={receiptRef} saleDetails={saleDetails} />
       </div>
     </div>
