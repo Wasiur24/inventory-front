@@ -274,7 +274,7 @@ export default function Sales() {
             </tbody>
           </table>
 
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-between w-full mt-4 p-6">
             <button
               className="px-4 py-2 bg-gray-300 rounded-md"
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
