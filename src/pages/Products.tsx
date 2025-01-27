@@ -166,12 +166,12 @@
 //     }
 //   };
 
-//   const handlePrint = useReactToPrint({
-//     contentRef: printRef,
-//     onAfterPrint: () => {
-//       setIsViewModalOpen(false);
-//     },
-//   });
+  // const handlePrint = useReactToPrint({
+  //   contentRef: printRef,
+  //   onAfterPrint: () => {
+  //     setIsViewModalOpen(false);
+  //   },
+  // });
 
 //   return (
 //     <div>
@@ -695,8 +695,14 @@ export default function Products() {
     }
   };
 
+  // const handlePrint = useReactToPrint({
+  //   content: () => printRef.current,
+  //   onAfterPrint: () => {
+  //     setIsViewModalOpen(false);
+  //   },
+  // });
   const handlePrint = useReactToPrint({
-    content: () => printRef.current,
+    contentRef: printRef,
     onAfterPrint: () => {
       setIsViewModalOpen(false);
     },
@@ -975,189 +981,6 @@ export default function Products() {
 
       {/* Edit Modal */}
 
-    {/* {isModalOpen && updatedProduct && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Edit Product</h2>
-        <button
-          onClick={() => {
-            setIsModalOpen(false);
-            setEditingProduct(null);
-            setUpdatedProduct(null);
-          }}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          // Ensure `category` and `supplier` have valid `_id` values
-          const payload = {
-            ...updatedProduct,
-            category: updatedProduct.category?._id || null, // Default to null if not set
-            supplier: updatedProduct.supplier?._id || null, // Default to null if not set
-          };
-
-          handleSaveProduct(payload); // Pass the corrected payload
-        }}
-      >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              value={updatedProduct.name}
-              onChange={(e) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  name: e.target.value,
-                })
-              }
-              className="mt-1 block w-full border rounded-md shadow-sm p-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Category</label>
-            <select
-              value={updatedProduct.category?._id || ''}
-              onChange={(e) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  category: { ...updatedProduct.category, _id: e.target.value },
-                })
-              }
-              className="mt-1 block w-full border rounded-md shadow-sm p-2"
-              required
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Supplier</label>
-            <select
-              value={updatedProduct.supplier?._id || ''}
-              onChange={(e) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  supplier: { ...updatedProduct.supplier, _id: e.target.value },
-                })
-              }
-              className="mt-1 block w-full border rounded-md shadow-sm p-2"
-              required
-            >
-              <option value="" disabled>
-                Select a supplier
-              </option>
-              {suppliers.map((supplier) => (
-                <option key={supplier._id} value={supplier._id}>
-                  {supplier.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Quantity</label>
-            <input
-              type="number"
-              value={updatedProduct.quantity}
-              onChange={(e) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  quantity: parseInt(e.target.value),
-                })
-              }
-              className="mt-1 block w-full border rounded-md shadow-sm p-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Selling Price</label>
-            <input
-              type="number"
-              value={updatedProduct.sellingPrice}
-              onChange={(e) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  sellingPrice: parseFloat(e.target.value),
-                })
-              }
-              className="mt-1 block w-full border rounded-md shadow-sm p-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">MRP Price</label>
-            <input
-              type="number"
-              value={updatedProduct.mrpprice}
-              onChange={(e) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  mrpprice: parseFloat(e.target.value),
-                })
-              }
-              className="mt-1 block w-full border rounded-md shadow-sm p-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Purchase Price</label>
-            <input
-              type="number"
-              value={updatedProduct.purchasePrice}
-              onChange={(e) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  purchasePrice: parseFloat(e.target.value),
-                })
-              }
-              className="mt-1 block w-full border rounded-md shadow-sm p-2"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="mt-6 flex justify-end space-x-3">
-          <button
-            type="button"
-            onClick={() => {
-              setIsModalOpen(false);
-              setEditingProduct(null);
-              setUpdatedProduct(null);
-            }}
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Save Changes
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)} */}
 
 {isModalOpen && updatedProduct && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -1366,7 +1189,7 @@ export default function Products() {
               </div>
             </div>
             
-            <div ref={printRef} className="space-y-4 p-4">
+            <div className="space-y-4 p-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -1434,8 +1257,9 @@ export default function Products() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Barcode
                 </label>
-                <div className="flex justify-center bg-white p-4">
+                <div ref={printRef}  className="flex justify-center bg-white p-4">
                   <Barcode value={viewingProduct.sku} />
+                  <h1 className="text-white py-2">jgjg</h1>
                 </div>
               </div>
             </div>
