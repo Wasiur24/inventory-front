@@ -52,7 +52,6 @@ const AddProduct: React.FC = () => {
       weight: undefined,
     };
   }
-  
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -106,6 +105,15 @@ const AddProduct: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     const updatedProducts = [...products];
+    if (name === "discountPercentage") {
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        [name]: value,
+        sellingPrice:
+          updatedProducts[index].mrpprice -
+          (updatedProducts[index].mrpprice * parseFloat(value)) / 100,
+      };
+    }
 
     updatedProducts[index] = {
       ...updatedProducts[index],
@@ -118,10 +126,9 @@ const AddProduct: React.FC = () => {
   const parseValue = (value: string, name: string): string | number => {
     if (
       name === "mrpprice" ||
-
       name === "purchasePrice" ||
       name === "sellingPrice" ||
-      name === "quantity" 
+      name === "quantity"
       // name === "weight"
     ) {
       return parseFloat(value) || 0;
@@ -296,7 +303,10 @@ const AddProduct: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700"> MRP Price</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  {" "}
+                  MRP Price
+                </label>
                 <input
                   name="mrpprice"
                   type="number"
@@ -320,6 +330,21 @@ const AddProduct: React.FC = () => {
                   required
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Discount Percentage
+                </label>
+                <input
+                  name="discountPercentage"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={product.discountPercentage}
+                  onChange={(e) => handleChange(index, e)}
+                  className="border border-gray-300 rounded-md p-2 w-full"
+                  required
+                />
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -332,6 +357,7 @@ const AddProduct: React.FC = () => {
                   onChange={(e) => handleChange(index, e)}
                   className="border border-gray-300 rounded-md p-2 w-full"
                   required
+                  disabled
                 />
               </div>
 
