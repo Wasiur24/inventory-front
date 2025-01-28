@@ -158,18 +158,80 @@ const Selladd: React.FC = () => {
     contentRef: receiptRef,
   });
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (isSubmitting) return;
+
+  //   try {
+  //     setIsSubmitting(true);
+
+  //     // Calculate GST and saved amounts
+  //     let totalCGST = 0;
+  //     let totalSGST = 0;
+  //     let savedAmount = 0;
+
+  //     saleDetails.products.forEach((product) => {
+  //       if (product.gstnumber) {
+  //         const gstRate = product.gstnumber / 2;
+  //         const gstAmount = (product.totalAmount * gstRate) / 100;
+  //         totalCGST += gstAmount;
+  //         totalSGST += gstAmount;
+  //       }
+  //       savedAmount +=
+  //         (product.mrpprice - product.sellingPrice) * product.quantitySold;
+  //     });
+
+  //     const saleData = {
+  //       ...saleDetails,
+  //       cgstAmount: totalCGST,
+  //       sgstAmount: totalSGST,
+  //       savedAmount: savedAmount,
+  //     };
+
+  //     const response = await SalesService.createSale(saleData);
+  //     printReceipt();
+
+  //     // Reset form and go back to step 1
+  //     setSaleDetails({
+  //       products: [
+  //         {
+  //           sku: "",
+  //           quantitySold: 1,
+  //           name: "",
+  //           sellingPrice: 0,
+  //           totalAmount: 0,
+  //           gstnumber: 0,
+  //           mrpprice: 0,
+  //         },
+  //       ],
+  //       paymentMethod: "",
+  //       customerName: "",
+  //       customerContact: "",
+  //       totalSaleAmount: 0,
+  //     });
+  //     setStep(1);
+  //     toast.success("Sale recorded successfully!");
+  //   } catch (error) {
+  //     toast.error(
+  //       error instanceof Error ? error.message : "Failed to record the sale"
+  //     );
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-
+  
     try {
       setIsSubmitting(true);
-
+  
       // Calculate GST and saved amounts
       let totalCGST = 0;
       let totalSGST = 0;
       let savedAmount = 0;
-
+  
       saleDetails.products.forEach((product) => {
         if (product.gstnumber) {
           const gstRate = product.gstnumber / 2;
@@ -180,17 +242,20 @@ const Selladd: React.FC = () => {
         savedAmount +=
           (product.mrpprice - product.sellingPrice) * product.quantitySold;
       });
-
+  
+      // Exclude customerContact if it is undefined or empty
+      const { customerContact, ...restDetails } = saleDetails;
       const saleData = {
-        ...saleDetails,
+        ...restDetails,
+        ...(customerContact ? { customerContact } : {}),
         cgstAmount: totalCGST,
         sgstAmount: totalSGST,
         savedAmount: savedAmount,
       };
-
+  
       const response = await SalesService.createSale(saleData);
       printReceipt();
-
+  
       // Reset form and go back to step 1
       setSaleDetails({
         products: [
@@ -219,6 +284,9 @@ const Selladd: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  
+  
+  
   const autoFillProductSku = (index) => {
     const name = saleDetails.products[index].name.trim();
     const product = products.find((item) => item.name === name);
@@ -504,7 +572,7 @@ const Selladd: React.FC = () => {
                 value={saleDetails.customerContact}
                 onChange={handleInputChange}
                 className="w-full border rounded-md p-2"
-                required
+                
               />
             </div>
 

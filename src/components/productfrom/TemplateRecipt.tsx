@@ -306,7 +306,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
             <th className="text-right">MRP</th>
             <th className="text-right">RATE</th>
             <th className="text-right">DIS%</th>
-            <th className="text-right">GST%</th>
+            {/* <th className="text-right">GST%</th> */}
             <th className="text-right">AMT</th>
           </tr>
         </thead>
@@ -324,7 +324,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
               <td className="text-right">
                 {product?.discountPercentage || "0"}%
               </td>
-              <td className="text-right">{product.gstnumber || 0}%</td>
+              {/* <td className="text-right">{product.gstnumber || 0}%</td> */}
               <td className="text-right">
                 ₹
                 {typeof product.totalAmount === "number"
