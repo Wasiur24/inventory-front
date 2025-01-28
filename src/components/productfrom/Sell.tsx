@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import SalesService, { SaleProduct } from "../../services/Sales.service";
 import {
@@ -14,7 +13,6 @@ import ProductService from "../../services/Product.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useReactToPrint } from "react-to-print";
-
 
 const Selladd: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -41,7 +39,6 @@ const Selladd: React.FC = () => {
   const [products, setProducts] = useState([]);
   const skuInputRef = useRef<HTMLInputElement>(null);
   const receiptRef = useRef(null);
-  
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -79,8 +76,8 @@ const Selladd: React.FC = () => {
         name: product.name,
         sellingPrice: product.sellingPrice,
         mrpprice: product.mrpprice,
-        gstnumber: product.category.gstnumber, // Ensure gstnumber is updated correctly 
-        
+        gstnumber: product.category.gstnumber, // Ensure gstnumber is updated correctly
+        discountPercentage: product.discountPercentage || 0,
         totalAmount: product.sellingPrice * updatedProducts[index].quantitySold,
       };
     } else {
@@ -164,35 +161,36 @@ const Selladd: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-  
+
     try {
       setIsSubmitting(true);
-      
+
       // Calculate GST and saved amounts
       let totalCGST = 0;
       let totalSGST = 0;
       let savedAmount = 0;
-  
-      saleDetails.products.forEach(product => {
+
+      saleDetails.products.forEach((product) => {
         if (product.gstnumber) {
           const gstRate = product.gstnumber / 2;
           const gstAmount = (product.totalAmount * gstRate) / 100;
           totalCGST += gstAmount;
           totalSGST += gstAmount;
         }
-        savedAmount += (product.mrpprice - product.sellingPrice) * product.quantitySold;
+        savedAmount +=
+          (product.mrpprice - product.sellingPrice) * product.quantitySold;
       });
-  
+
       const saleData = {
         ...saleDetails,
         cgstAmount: totalCGST,
         sgstAmount: totalSGST,
-        savedAmount: savedAmount
+        savedAmount: savedAmount,
       };
-  
+
       const response = await SalesService.createSale(saleData);
       printReceipt();
-  
+
       // Reset form and go back to step 1
       setSaleDetails({
         products: [
@@ -221,7 +219,6 @@ const Selladd: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
 
   return (
     <div className="max-w-4xl mx-auto p-6">

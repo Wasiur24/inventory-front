@@ -193,7 +193,6 @@
 
 // export default TemplateRecipt;
 
-
 import React from "react";
 import { format } from "date-fns";
 
@@ -236,7 +235,9 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
 
   // Use existing bill number or generate new one
   const billNo = saleDetails.billNo || Math.floor(Math.random() * 10000);
-  const saleDate = saleDetails.saleDate ? new Date(saleDetails.saleDate) : new Date();
+  const saleDate = saleDetails.saleDate
+    ? new Date(saleDetails.saleDate)
+    : new Date();
 
   // Calculate GST amounts
   const calculateGSTAmounts = () => {
@@ -256,16 +257,21 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
   };
 
   // Use stored GST amounts if available, otherwise calculate
-  const { totalCGST, totalSGST } = saleDetails.cgstAmount && saleDetails.sgstAmount
-    ? { totalCGST: saleDetails.cgstAmount, totalSGST: saleDetails.sgstAmount }
-    : calculateGSTAmounts();
+  const { totalCGST, totalSGST } =
+    saleDetails.cgstAmount && saleDetails.sgstAmount
+      ? { totalCGST: saleDetails.cgstAmount, totalSGST: saleDetails.sgstAmount }
+      : calculateGSTAmounts();
 
   // Calculate saved amount
   const calculateSavedAmount = () => {
-    return saleDetails.savedAmount || saleDetails.products.reduce((total, product) => {
-      const savedPerItem = (product.mrpprice - product.sellingPrice) * product.quantitySold;
-      return total + savedPerItem;
-    }, 0);
+    return (
+      saleDetails.savedAmount ||
+      saleDetails.products.reduce((total, product) => {
+        const savedPerItem =
+          (product.mrpprice - product.sellingPrice) * product.quantitySold;
+        return total + savedPerItem;
+      }, 0)
+    );
   };
 
   const savedAmount = calculateSavedAmount();
@@ -299,26 +305,35 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
             <th className="text-right">QTY</th>
             <th className="text-right">MRP</th>
             <th className="text-right">RATE</th>
+            <th className="text-right">DIS%</th>
             <th className="text-right">GST%</th>
             <th className="text-right">AMT</th>
           </tr>
         </thead>
         <tbody>
-  {saleDetails.products.map((product, index) => (
-    <tr key={index} className="border-b border-dotted text-[11px]">
-      <td className="text-left">{product.name}</td>
-      <td className="text-right">{product.quantitySold}</td>
-      <td className="text-right">₹{product.mrpprice?.toFixed(2) || "0.00"}</td>
-      <td className="text-right">₹{product.sellingPrice?.toFixed(2) || "0.00"}</td>
-      <td className="text-right">{product.gstnumber || 0}%</td>
-      <td className="text-right">
-        ₹{typeof product.totalAmount === "number" ? product.totalAmount.toFixed(2) : "0.00"}
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-
+          {saleDetails.products.map((product, index) => (
+            <tr key={index} className="border-b border-dotted text-[11px]">
+              <td className="text-left">{product.name}</td>
+              <td className="text-right">{product.quantitySold}</td>
+              <td className="text-right">
+                ₹{product.mrpprice?.toFixed(2) || "0.00"}
+              </td>
+              <td className="text-right">
+                ₹{product.sellingPrice?.toFixed(2) || "0.00"}
+              </td>
+              <td className="text-right">
+                {product?.discountPercentage || "0"}%
+              </td>
+              <td className="text-right">{product.gstnumber || 0}%</td>
+              <td className="text-right">
+                ₹
+                {typeof product.totalAmount === "number"
+                  ? product.totalAmount.toFixed(2)
+                  : "0.00"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
 
       <div className="mt-2 border-t border-black">
