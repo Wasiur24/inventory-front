@@ -232,11 +232,49 @@ const Selladd: React.FC = () => {
       console.warn("Product not found for the entered name.");
     }
   };
-  const handleNameChange = (e, index) => {
+  const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const name = e.target.value;
     const updatedProducts = [...saleDetails.products];
-    updatedProducts[index].name = e.target.value;
-    setSaleDetails({ ...saleDetails, products: updatedProducts }); // Update state
+  
+    // Find the product based on the entered name
+    const product = products.find((p) => p.name === name);
+  
+    if (product) {
+      // If the product is found, update the relevant fields
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        name,
+        sku: product.sku,  // Auto update SKU
+        sellingPrice: product.sellingPrice,
+        mrpprice: product.mrpprice,
+        gstnumber: product.category.gstnumber, // Ensure gstnumber is updated correctly
+        discountPercentage: product.discountPercentage || 0,
+        totalAmount: product.sellingPrice * updatedProducts[index].quantitySold,
+      };
+    } else {
+      // If no product is found, reset to default values
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        name,
+        sku: "",  // Clear SKU if name is invalid
+        sellingPrice: 0,
+        totalAmount: 0,
+        mrpprice: 0,
+        gstnumber: 0,
+      };
+    }
+  
+    console.log(updatedProducts);
+    
+    // Calculate the updated total sale amount
+    const totalSaleAmount = calculateTotalAmount(updatedProducts);
+    setSaleDetails((prev) => ({
+      ...prev,
+      products: updatedProducts,
+      totalSaleAmount,
+    }));
   };
+  
     
   return (
     <div className="max-w-4xl mx-auto p-6">
