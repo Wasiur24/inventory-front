@@ -219,7 +219,25 @@ const Selladd: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
+  const autoFillProductSku = (index) => {
+    const name = saleDetails.products[index].name.trim();
+    const product = products.find((item) => item.name === name);
+  
+    if (product) {
+      const updatedProducts = [...saleDetails.products];
+      updatedProducts[index].sku = product.sku;
+      updatedProducts[index].sellingPrice = product.sellingPrice || 0; // Optionally update other fields
+      setSaleDetails({ ...saleDetails, products: updatedProducts }); // Update state
+    } else {
+      console.warn("Product not found for the entered name.");
+    }
+  };
+  const handleNameChange = (e, index) => {
+    const updatedProducts = [...saleDetails.products];
+    updatedProducts[index].name = e.target.value;
+    setSaleDetails({ ...saleDetails, products: updatedProducts }); // Update state
+  };
+    
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">New Sale</h1>
@@ -260,7 +278,7 @@ const Selladd: React.FC = () => {
                     <th className="px-4 py-2 border-b">Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                {/* <tbody>
                   {saleDetails.products.map((product, index) => (
                     <tr key={index}>
                       <td className="px-4 py-2 border-b">
@@ -303,7 +321,67 @@ const Selladd: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                </tbody>
+                </tbody> */}
+         <tbody>
+  {saleDetails.products.map((product, index) => (
+    <tr key={index}>
+      <td className="px-4 py-2 border-b">
+        <input
+          type="text"
+          value={product.sku}
+          onChange={(e) => handleSkuChange(e, index)}
+          onBlur={() => autoFillProductName(index)}
+          className="w-full border rounded px-2 py-1"
+          placeholder="Enter SKU"
+        />
+      </td>
+      <td className="px-4 py-2 border-b">
+  <input
+    type="text"
+    value={product.name || ""}
+    onChange={(e) => handleNameChange(e, index)}
+    onBlur={() => autoFillProductSku(index)}
+    list={`product-options-${index}`}
+    className="w-full border rounded px-2 py-1"
+    placeholder="Select or Enter Product"
+  />
+  <datalist id={`product-options-${index}`}>
+    {products.map((item) => (
+      <option key={item.sku} value={item.name} />
+    ))}
+  </datalist>
+</td>
+
+      <td className="px-4 py-2 border-b">
+        ₹{product.sellingPrice.toFixed(2)}
+      </td>
+      <td className="px-4 py-2 border-b">
+        <input
+          type="number"
+          value={product.quantitySold}
+          onChange={(e) => handleQuantityChange(e, index)}
+          min="1"
+          className="w-20 border rounded px-2 py-1"
+        />
+      </td>
+      <td className="px-4 py-2 border-b">
+        ₹{product.totalAmount.toFixed(2)}
+      </td>
+      <td className="px-4 py-2 border-b">
+        {saleDetails.products.length > 1 && (
+          <button
+            type="button"
+            onClick={() => removeProductField(index)}
+            className="text-red-500 hover:text-red-700"
+          >
+            <Trash2 size={16} />
+          </button>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
                 <tfoot>
                   <tr>
                     <td colSpan={4} className="px-4 py-2 text-right font-bold">
