@@ -14,7 +14,7 @@
 //     pincode: '',
 //     country: '',
 //   });
-  
+
 // const navigate = useNavigate();
 //   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 //     const { name, value } = e.target;
@@ -52,7 +52,6 @@
 //       setSupplierData({ ...supplierData, [name]: value });
 //     }
 //   };
-  
 
 //   return (
 //     <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-md">
@@ -158,27 +157,29 @@
 
 // export default AddSupplier;
 
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import SupplierService from '../../services/Supplier.service';
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import SupplierService from "../../services/Supplier.service";
 import { useNavigate } from "react-router-dom";
 
 const AddSupplier: React.FC = () => {
   const [supplierData, setSupplierData] = useState({
-    name: '',
-    contactPerson: '',
-    phone: '',
-    email: '',
-    address: '',
-    city: '',
-    state: '',
-    pincode: '',
-    country: 'India',
+    name: "",
+    contactPerson: "",
+    phone: "",
+    email: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
+    country: "India",
   });
 
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setSupplierData({ ...supplierData, [name]: value });
   };
@@ -195,27 +196,27 @@ const AddSupplier: React.FC = () => {
 
     // Validate if the supplier name starts with a number
     if (/^\d/.test(supplierData.name)) {
-      toast.error('Supplier name cannot start with a number');
+      toast.error("Supplier name cannot start with a number");
       return;
     }
 
     try {
       await SupplierService.addSupplier(supplierData);
-      toast.success('Supplier added successfully!');
+      toast.success("Supplier added successfully!");
       setSupplierData({
-        name: '',
-        contactPerson: '',
-        phone: '',
-        email: '',
-        address: '',
-        city: '',
-        state: '',
-        pincode: '',
-        country: '',
+        name: "",
+        contactPerson: "",
+        phone: "",
+        email: "",
+        address: "",
+        city: "",
+        state: "",
+        pincode: "",
+        country: "",
       });
       navigate("/suppliers");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Error adding supplier');
+      toast.error(error.response?.data?.message || "Error adding supplier");
     }
   };
 
@@ -228,12 +229,18 @@ const AddSupplier: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const firstInput = document.querySelector<HTMLInputElement>("#name");
+    if (firstInput) firstInput.focus();
+  }, []);
+
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-md">
       <h2 className="text-2xl font-bold mb-4">Add Supplier</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
+          id="name"
           name="name"
           placeholder="Company Name"
           value={supplierData.name}

@@ -36,7 +36,7 @@
 
 //     fetchSuppliers();
 //   }, []);
-  
+
 //   const navigate = useNavigate(); // Get the navigate function
 
 //   const handleClick = () => {
@@ -114,13 +114,11 @@
 //   );
 // }
 
-
-
 // React Component with Search and Pagination
-import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
-import SupplierService from '../services/Supplier.service';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
+import SupplierService from "../services/Supplier.service";
+import { useNavigate } from "react-router-dom";
 
 interface Supplier {
   id: string;
@@ -140,7 +138,7 @@ export default function Suppliers() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [filteredSuppliers, setFilteredSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [suppliersPerPage] = useState(5); // Number of suppliers per page
 
@@ -154,7 +152,7 @@ export default function Suppliers() {
         setSuppliers(data);
         setFilteredSuppliers(data);
       } catch (error) {
-        console.error('Failed to fetch suppliers:', error);
+        console.error("Failed to fetch suppliers:", error);
       } finally {
         setLoading(false);
       }
@@ -190,7 +188,7 @@ export default function Suppliers() {
   };
 
   const handleClick = () => {
-    navigate('/suppliers/add');
+    navigate("/suppliers/add");
   };
 
   const handleEdit = (supplier: Supplier) => {

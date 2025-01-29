@@ -211,6 +211,11 @@ const AddProduct: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const firstInput = document.querySelector<HTMLInputElement>("#sku");
+    if (firstInput) firstInput.focus();
+  }, []);
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Add Multiple Products</h1>
@@ -228,6 +233,7 @@ const AddProduct: React.FC = () => {
               <input
                 type="text"
                 name="sku"
+                id="sku"
                 value={products[index]?.sku || ""}
                 onChange={(e) => handleChange(index, e)}
                 className="border border-gray-300 rounded-md p-2 w-full"
