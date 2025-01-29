@@ -121,6 +121,11 @@ const AddProduct: React.FC = () => {
     };
 
     setProducts(updatedProducts);
+    if (e.target.id === "sku") {
+      console.log(e.target.id);
+      const firstInput = document.querySelector<HTMLInputElement>("#name");
+      if (firstInput) firstInput.focus();
+    }
   };
 
   const parseValue = (value: string, name: string): string | number => {
@@ -248,6 +253,7 @@ const AddProduct: React.FC = () => {
                 </label>
                 <input
                   name="name"
+                  id="name"
                   value={product.name}
                   onChange={(e) => handleChange(index, e)}
                   className="border border-gray-300 rounded-md p-2 w-full"

@@ -98,6 +98,10 @@ const Selladd: React.FC = () => {
       products: updatedProducts,
       totalSaleAmount,
     }));
+
+    if (e.target.id === "sku") {
+      addProductField();
+    }
   };
 
   const handleQuantityChange = (
@@ -231,20 +235,25 @@ const Selladd: React.FC = () => {
       let totalCGST = 0;
       let totalSGST = 0;
       let savedAmount = 0;
-
-      saleDetails.products.forEach((product) => {
-        if (product.gstnumber) {
-          const gstRate = product.gstnumber / 2;
-          const gstAmount = (product.totalAmount * gstRate) / 100;
-          totalCGST += gstAmount;
-          totalSGST += gstAmount;
-        }
-        savedAmount +=
-          (product.mrpprice - product.sellingPrice) * product.quantitySold;
-      });
+      console.log(saleDetails);
+      saleDetails.products
+        ?.filter((i) => i.name)
+        .forEach((product) => {
+          if (product.gstnumber) {
+            const gstRate = product.gstnumber / 2;
+            const gstAmount = (product.totalAmount * gstRate) / 100;
+            totalCGST += gstAmount;
+            totalSGST += gstAmount;
+          }
+          savedAmount +=
+            (product.mrpprice - product.sellingPrice) * product.quantitySold;
+        });
 
       // Exclude customerContact if it is undefined or empty
-      const { customerContact, ...restDetails } = saleDetails;
+      const { customerContact, ...restDetails } = {
+        ...saleDetails,
+        salesDetails: saleDetails.products.filter((i) => i.name),
+      };
       const saleData = {
         ...restDetails,
         ...(customerContact ? { customerContact } : {}),
@@ -252,8 +261,11 @@ const Selladd: React.FC = () => {
         sgstAmount: totalSGST,
         savedAmount: savedAmount,
       };
-
-      const response = await SalesService.createSale(saleData);
+      console.log(saleData?.products?.filter((i) => i.name?.length));
+      const response = await SalesService.createSale({
+        ...saleData,
+        products: saleData.products?.filter((i) => i.name?.length),
+      });
       printReceipt();
 
       // Reset form and go back to step 1

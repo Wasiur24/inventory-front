@@ -138,7 +138,7 @@ const SalesService = {
     let totalCGST = 0;
     let totalSGST = 0;
     let savedAmount = 0;
-
+    console.log(data.products);
     data.products.forEach(product => {
       if (product.gstnumber) {
         const gstRate = product.gstnumber / 2;
@@ -155,7 +155,6 @@ const SalesService = {
       sgstAmount: totalSGST,
       savedAmount: savedAmount,
     };
-
     const response = await apiClient.post(`${API_BASE_URL}/sales`, saleData);
     return response.data;
   },
