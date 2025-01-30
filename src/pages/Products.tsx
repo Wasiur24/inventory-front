@@ -114,7 +114,10 @@ export default function Products() {
     
 
     if (selectedCategory) {
-      result = result.filter(product => product.category?._id === selectedCategory);
+      console.log(selectedCategory, "selectedCategory");
+      
+      result = result.filter(product => product.category?.name == selectedCategory);
+      console.log(result, "result");
     }
 
     if (selectedStatus) {
@@ -255,7 +258,7 @@ export default function Products() {
                 >
                   <option value="">All Categories</option>
                   {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
+                    <option key={category._id} value={category.name}>
                       {category.name}
                     </option>
                   ))}
