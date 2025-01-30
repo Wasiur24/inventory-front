@@ -333,16 +333,85 @@ const Selladd: React.FC = () => {
     contentRef: receiptRef,
   });
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (isSubmitting) return;
+
+  //   try {
+  //     setIsSubmitting(true);
+  //     let totalCGST = 0;
+  //     let totalSGST = 0;
+  //     let savedAmount = 0;
+
+  //     saleDetails.products
+  //       ?.filter((i) => i.name)
+  //       .forEach((product) => {
+  //         if (product.gstnumber) {
+  //           const gstRate = product.gstnumber / 2;
+  //           const gstAmount = (product.totalAmount * gstRate) / 100;
+  //           totalCGST += gstAmount;
+  //           totalSGST += gstAmount;
+  //         }
+  //         savedAmount +=
+  //           (product.mrpprice - product.sellingPrice) * product.quantitySold;
+  //       });
+
+  //     const { customerContact, ...restDetails } = {
+  //       ...saleDetails,
+  //       salesDetails: saleDetails.products.filter((i) => i.name),
+  //     };
+  //     const saleData = {
+  //       ...restDetails,
+  //       ...(customerContact ? { customerContact } : {}),
+  //       cgstAmount: totalCGST,
+  //       sgstAmount: totalSGST,
+  //       savedAmount: savedAmount,
+  //     };
+
+  //     await SalesService.createSale({
+  //       ...saleData,
+  //       products: saleData.products?.filter((i) => i.name?.length),
+  //     });
+  //     printReceipt();
+
+  //     setSaleDetails({
+  //       products: [
+  //         {
+  //           sku: "",
+  //           quantitySold: 1,
+  //           name: "",
+  //           sellingPrice: 0,
+  //           totalAmount: 0,
+  //           gstnumber: 0,
+  //           mrpprice: 0,
+  //         },
+  //       ],
+  //       paymentMethod: "",
+  //       customerName: "",
+  //       customerContact: "",
+  //       totalSaleAmount: 0,
+  //     });
+  //     setStep(1);
+  //     toast.success("Sale recorded successfully!");
+  //   } catch (error) {
+  //     toast.error(
+  //       error instanceof Error ? error.message : "Failed to record the sale"
+  //     );
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-
+  
     try {
       setIsSubmitting(true);
       let totalCGST = 0;
       let totalSGST = 0;
       let savedAmount = 0;
-
+  
       saleDetails.products
         ?.filter((i) => i.name)
         .forEach((product) => {
@@ -355,7 +424,7 @@ const Selladd: React.FC = () => {
           savedAmount +=
             (product.mrpprice - product.sellingPrice) * product.quantitySold;
         });
-
+  
       const { customerContact, ...restDetails } = {
         ...saleDetails,
         salesDetails: saleDetails.products.filter((i) => i.name),
@@ -367,13 +436,14 @@ const Selladd: React.FC = () => {
         sgstAmount: totalSGST,
         savedAmount: savedAmount,
       };
-
+  
       await SalesService.createSale({
         ...saleData,
         products: saleData.products?.filter((i) => i.name?.length),
       });
+  
       printReceipt();
-
+  
       setSaleDetails({
         products: [
           {
@@ -393,15 +463,22 @@ const Selladd: React.FC = () => {
       });
       setStep(1);
       toast.success("Sale recorded successfully!");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to record the sale"
-      );
+    } catch (error: any) {
+      console.error("Error submitting sale:", error);
+  
+      // Check if the error response contains an "Insufficient stock" message
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(
+          error instanceof Error ? error.message : "Failed to record the sale"
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
   useEffect(() => {
     if (skuInputRefs.current[0]) {
       skuInputRefs.current[0]?.focus();
