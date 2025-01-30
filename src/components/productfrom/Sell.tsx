@@ -1,14 +1,6 @@
-
-
-
 import React, { useState, useEffect, useRef } from "react";
 import SalesService from "../../services/Sales.service";
-import {
-  Printer,
-  Plus,
-  Trash2,
-  ArrowRight,
-} from "lucide-react";
+import { Printer, Plus, Trash2, ArrowRight } from "lucide-react";
 import TemplateRecipt from "./TemplateRecipt";
 import ProductService from "../../services/Product.service";
 import { toast } from "react-toastify";
@@ -46,7 +38,9 @@ const Selladd: React.FC = () => {
         const data = await ProductService.getAllProductsCategory();
         setProducts(data);
       } catch (err) {
-        toast.error(`Error fetching products: ${err.message || "Unknown error"}`);
+        toast.error(
+          `Error fetching products: ${err.message || "Unknown error"}`
+        );
       }
     };
     fetchProducts();
@@ -64,10 +58,18 @@ const Selladd: React.FC = () => {
       ...prev,
       products: [
         ...prev.products,
-        { sku: "", quantitySold: 1, name: "", sellingPrice: 0, totalAmount: 0, gstnumber: 0, mrpprice: 0 },
+        {
+          sku: "",
+          quantitySold: 1,
+          name: "",
+          sellingPrice: 0,
+          totalAmount: 0,
+          gstnumber: 0,
+          mrpprice: 0,
+        },
       ],
     }));
-    
+
     if (callback) {
       setTimeout(callback, 0);
     }
@@ -92,24 +94,26 @@ const Selladd: React.FC = () => {
         updatedProducts[existingProductIndex] = {
           ...updatedProducts[existingProductIndex],
           quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
-          totalAmount: (updatedProducts[existingProductIndex].quantitySold + 1) * updatedProducts[existingProductIndex].sellingPrice,
+          totalAmount:
+            (updatedProducts[existingProductIndex].quantitySold + 1) *
+            updatedProducts[existingProductIndex].sellingPrice,
         };
 
         // Clear the current input row if it's not the only row
-        if (saleDetails.products.length > 1) {
-          updatedProducts.splice(index, 1);
-        } else {
-          // If it's the only row, just clear it
-          updatedProducts[index] = {
-            sku: "",
-            quantitySold: 1,
-            name: "",
-            sellingPrice: 0,
-            totalAmount: 0,
-            gstnumber: 0,
-            mrpprice: 0,
-          };
-        }
+        // if (saleDetails.products.length > 1) {
+        //   updatedProducts.splice(index, 1);
+        // } else {
+        // If it's the only row, just clear it
+        updatedProducts[index] = {
+          sku: "",
+          quantitySold: 1,
+          name: "",
+          sellingPrice: 0,
+          totalAmount: 0,
+          gstnumber: 0,
+          mrpprice: 0,
+          // };
+        };
 
         const totalSaleAmount = calculateTotalAmount(updatedProducts);
         setSaleDetails((prev) => ({
@@ -119,11 +123,11 @@ const Selladd: React.FC = () => {
         }));
 
         // Focus back on the input
-        setTimeout(() => {
-          if (skuInputRefs.current[0]) {
-            skuInputRefs.current[0]?.focus();
-          }
-        }, 100);
+        // setTimeout(() => {
+        //   if (skuInputRefs.current[0]) {
+        //     skuInputRefs.current[0]?.focus();
+        //   }
+        // }, 100);
       } else {
         // If SKU doesn't exist, add as new product
         updatedProducts[index] = {
@@ -134,7 +138,8 @@ const Selladd: React.FC = () => {
           mrpprice: product.mrpprice,
           gstnumber: product.category.gstnumber,
           discountPercentage: product.discountPercentage || 0,
-          totalAmount: product.sellingPrice * updatedProducts[index].quantitySold,
+          totalAmount:
+            product.sellingPrice * updatedProducts[index].quantitySold,
         };
 
         const totalSaleAmount = calculateTotalAmount(updatedProducts);
@@ -194,7 +199,9 @@ const Selladd: React.FC = () => {
         updatedProducts[existingProductIndex] = {
           ...updatedProducts[existingProductIndex],
           quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
-          totalAmount: (updatedProducts[existingProductIndex].quantitySold + 1) * updatedProducts[existingProductIndex].sellingPrice,
+          totalAmount:
+            (updatedProducts[existingProductIndex].quantitySold + 1) *
+            updatedProducts[existingProductIndex].sellingPrice,
         };
 
         // Clear the current input row if it's not the only row
@@ -236,7 +243,8 @@ const Selladd: React.FC = () => {
           mrpprice: product.mrpprice,
           gstnumber: product.category.gstnumber,
           discountPercentage: product.discountPercentage || 0,
-          totalAmount: product.sellingPrice * updatedProducts[index].quantitySold,
+          totalAmount:
+            product.sellingPrice * updatedProducts[index].quantitySold,
         };
 
         const totalSaleAmount = calculateTotalAmount(updatedProducts);
@@ -277,9 +285,6 @@ const Selladd: React.FC = () => {
     }
   };
 
-
-  
-
   const handleQuantityChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -302,7 +307,9 @@ const Selladd: React.FC = () => {
 
   const removeProductField = (index: number) => {
     if (saleDetails.products.length > 1) {
-      const updatedProducts = saleDetails.products.filter((_, i) => i !== index);
+      const updatedProducts = saleDetails.products.filter(
+        (_, i) => i !== index
+      );
       const totalSaleAmount = calculateTotalAmount(updatedProducts);
       setSaleDetails((prev) => ({
         ...prev,
@@ -408,14 +415,18 @@ const Selladd: React.FC = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex gap-2">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 1 ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                step === 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}
+            >
               1
             </div>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 2 ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                step === 2 ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}
+            >
               2
             </div>
           </div>
@@ -443,7 +454,7 @@ const Selladd: React.FC = () => {
                       <td className="px-4 py-2 border-b">
                         <input
                           type="text"
-                          ref={el => skuInputRefs.current[index] = el}
+                          ref={(el) => (skuInputRefs.current[index] = el)}
                           value={product.sku}
                           onChange={(e) => handleSkuChange(e, index)}
                           className="w-full border rounded px-2 py-1"
@@ -453,7 +464,7 @@ const Selladd: React.FC = () => {
                       <td className="px-4 py-2 border-b">
                         <input
                           type="text"
-                          ref={el => nameInputRefs.current[index] = el}
+                          ref={(el) => (nameInputRefs.current[index] = el)}
                           value={product.name || ""}
                           onChange={(e) => handleNameChange(e, index)}
                           list={`product-options-${index}`}
@@ -523,7 +534,9 @@ const Selladd: React.FC = () => {
                 type="button"
                 onClick={() => setStep(2)}
                 className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                disabled={!saleDetails.products.some((p) => p.sku && p.quantitySold > 0)}
+                disabled={
+                  !saleDetails.products.some((p) => p.sku && p.quantitySold > 0)
+                }
               >
                 Next
                 <ArrowRight size={20} />
@@ -543,7 +556,6 @@ const Selladd: React.FC = () => {
                 value={saleDetails.paymentMethod}
                 onChange={handleInputChange}
                 className="w-full border rounded-md p-2"
-            
               >
                 <option value="">Select Payment Method</option>
                 <option value="Credit Card">Credit Card</option>
@@ -563,7 +575,6 @@ const Selladd: React.FC = () => {
                 value={saleDetails.customerName}
                 onChange={handleInputChange}
                 className="w-full border rounded-md p-2"
-              
               />
             </div>
 
@@ -595,7 +606,9 @@ const Selladd: React.FC = () => {
                 className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 disabled:bg-gray-400"
               >
                 <Printer size={20} />
-                {isSubmitting ? "Processing..." : "Complete Sale & Print Receipt"}
+                {isSubmitting
+                  ? "Processing..."
+                  : "Complete Sale & Print Receipt"}
               </button>
             </div>
           </div>
