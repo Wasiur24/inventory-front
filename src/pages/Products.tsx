@@ -107,10 +107,11 @@ export default function Products() {
     if (searchTerm) {
       result = result.filter(
         product =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.category?.name.toLowerCase().includes(searchTerm.toLowerCase())
+          product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.category?.name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+    
 
     if (selectedCategory) {
       result = result.filter(product => product.category?._id === selectedCategory);
