@@ -366,7 +366,7 @@ export default function Products() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="relative">
+                      <div className="relative ">
                         <button
                           className="text-gray-500 hover:text-gray-700"
                           onClick={() =>
@@ -378,7 +378,10 @@ export default function Products() {
                           <MoreVertical className="h-5 w-5" />
                         </button>
                         {activeDropdown === product._id && (
-                         <div className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-[999999999999]">
+                        //  <div className="absolute right-[11vh] top-[-1vh] mt-2  w-50  flex flex-row bg-white rounded-md shadow-lg z-[999999999999]">
+                        <div className="absolute right-[11vh] top-[-1vh] mt-2 w-50 flex flex-row bg-white rounded-md shadow-lg z-[999999999999] 
+  border-4 border-transparent bg-clip-padding 
+  hover:border-gradient-to-r hover:from-blue-500 hover:via-green-500 hover:to-red-500 transition-all duration-300">
                             <button
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                               onClick={() => {
