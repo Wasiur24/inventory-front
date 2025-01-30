@@ -401,50 +401,7 @@ const Selladd: React.FC = () => {
                     <th className="px-4 py-2 border-b">Action</th>
                   </tr>
                 </thead>
-                {/* <tbody>
-                  {saleDetails.products.map((product, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-2 border-b">
-                        <input
-                          type="text"
-                          value={product.sku}
-                          onChange={(e) => handleSkuChange(e, index)}
-                          className="w-full border rounded px-2 py-1"
-                          placeholder="Enter SKU"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {product.name || "-"}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        ₹{product.sellingPrice.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        <input
-                          type="number"
-                          value={product.quantitySold}
-                          onChange={(e) => handleQuantityChange(e, index)}
-                          min="1"
-                          className="w-20 border rounded px-2 py-1"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        ₹{product.totalAmount.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {saleDetails.products.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeProductField(index)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody> */}
+             
                 <tbody>
                   {saleDetails.products.map((product, index) => (
                     <tr key={index}>
@@ -556,7 +513,7 @@ const Selladd: React.FC = () => {
                 value={saleDetails.paymentMethod}
                 onChange={handleInputChange}
                 className="w-full border rounded-md p-2"
-                required
+              
               >
                 <option value="">Select Payment Method</option>
                 <option value="Credit Card">Credit Card</option>
@@ -576,7 +533,7 @@ const Selladd: React.FC = () => {
                 value={saleDetails.customerName}
                 onChange={handleInputChange}
                 className="w-full border rounded-md p-2"
-                required
+                
               />
             </div>
 
