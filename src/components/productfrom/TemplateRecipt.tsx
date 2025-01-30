@@ -334,10 +334,12 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
                 <td className="text-left">{product.name}</td>
                 <td className="text-right">{product.quantitySold}</td>
                 <td className="text-right">
-                  ₹{product.mrpprice?.toFixed(2) || "0.00"}
+                  {/* ₹{product.mrpprice?.toFixed(2) || "0.00"} */}
+                  ₹{product.mrpprice || "0.00"}
                 </td>
                 <td className="text-right">
-                  ₹{product.sellingPrice?.toFixed(2) || "0.00"}
+                  {/* ₹{product.sellingPrice?.toFixed(2) || "0.00"} */}
+                  ₹{product.sellingPrice || "0.00"}
                 </td>
                 <td className="text-right">
                   {product?.discountPercentage || "0"}%
@@ -345,7 +347,8 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
                 <td className="text-right">
                   ₹
                   {typeof product.totalAmount === "number"
-                    ? product.totalAmount.toFixed(2)
+                    // ? product.totalAmount.toFixed(2)
+                    ? product.totalAmount
                     : "0.00"}
                 </td>
               </tr>
@@ -385,6 +388,7 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
           <div className="flex justify-between font-bold mt-1">
             <span>GRAND TOTAL:</span>
             <span>₹{saleDetails?.totalSaleAmount?.toFixed(2)}</span>
+           
           </div>
         </div>
       </div>
