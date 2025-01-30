@@ -310,7 +310,7 @@ const AddProduct: React.FC = () => {
                   value={product.description}
                   onChange={(e) => handleChange(index, e)}
                   className="border border-gray-300 rounded-md p-2 w-full"
-                  required
+                 
                 />
               </div>
 
@@ -412,7 +412,7 @@ const AddProduct: React.FC = () => {
                   value={product.manufacturingDate}
                   onChange={(e) => handleChange(index, e)}
                   className="border border-gray-300 rounded-md p-2 w-full"
-                  required
+                  
                 />
               </div>
 
