@@ -63,7 +63,7 @@ export default function Sales() {
       }
     } catch (err) {
       console.error("Failed to fetch transactions:", err);
-      setError("Failed to fetch transactions. Please try again later.");
+      setError("No transactions available");
     } finally {
       setLoading(false);
     }
