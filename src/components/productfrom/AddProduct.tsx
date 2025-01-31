@@ -221,6 +221,15 @@ const AddProduct: React.FC = () => {
     if (firstInput) firstInput.focus();
   }, []);
 
+  const skuRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+const handleSKUChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  handleChange(index, e);
+  if (skuRefs.current[index]) {
+    skuRefs.current[index]?.focus(); // Refocus on the SKU input
+  }
+};
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Add Multiple Products</h1>
@@ -235,7 +244,7 @@ const AddProduct: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700">
                 SKU (Optional if not have)
               </label>
-              <input
+              {/* <input
                 type="text"
                 name="sku"
                 id="sku"
@@ -243,7 +252,24 @@ const AddProduct: React.FC = () => {
                 onChange={(e) => handleChange(index, e)}
                 className="border border-gray-300 rounded-md p-2 w-full"
                 placeholder="Enter SKU value"
-              />
+              /> */}
+              <input
+  type="text"
+  name="sku"
+  id="sku"
+  ref={(el) => (skuRefs.current[index] = el)}
+  value={products[index]?.sku || ""}
+  onChange={(e) => handleSKUChange(index, e)}
+  onKeyDown={(e) => e.stopPropagation()}
+  onKeyPress={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      skuRefs.current[index]?.focus(); // Keep focus on SKU input
+    }
+  }}
+  className="border border-gray-300 rounded-md p-2 w-full"
+  placeholder="Enter SKU value"
+/>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
