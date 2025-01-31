@@ -1,5 +1,6 @@
 
 
+
 // import apiClient from './api';
 
 // const API_BASE_URL = '/sales';
@@ -15,19 +16,6 @@
 //   totalAmount: number;
 // }
 
-// // export interface Sale {
-// //   id?: string;
-// //   products: SaleProduct[];
-// //   totalSaleAmount: number;
-// //   saleDate?: string;
-// //   paymentMethod: 'Cash' | 'Credit Card' | 'Debit Card' | 'UPI' | 'Other';
-// //   customerName: string;
-// //   customerContact: string;
-// //   billNo?: number;
-// //   cgstAmount?: number;
-// //   sgstAmount?: number;
-// //   savedAmount?: number;
-// // }
 // export interface Sale {
 //   id?: string;
 //   products: SaleProduct[];
@@ -35,21 +23,19 @@
 //   saleDate?: string;
 //   paymentMethod: 'Cash' | 'Credit Card' | 'Debit Card' | 'UPI' | 'Other';
 //   customerName: string;
-//   customerContact?: string; // Made optional
+//   customerContact?: string; // Optional field
 //   billNo?: number;
 //   cgstAmount?: number;
 //   sgstAmount?: number;
 //   savedAmount?: number;
 // }
 
-
 // const SalesService = {
 //   createSale: async (data: Omit<Sale, 'id' | 'saleDate'>) => {
-//     // Calculate GST and saved amount before sending
 //     let totalCGST = 0;
 //     let totalSGST = 0;
 //     let savedAmount = 0;
-
+//     console.log(data.products);
 //     data.products.forEach(product => {
 //       if (product.gstnumber) {
 //         const gstRate = product.gstnumber / 2;
@@ -64,9 +50,8 @@
 //       ...data,
 //       cgstAmount: totalCGST,
 //       sgstAmount: totalSGST,
-//       savedAmount: savedAmount
+//       savedAmount: savedAmount,
 //     };
-
 //     const response = await apiClient.post(`${API_BASE_URL}/sales`, saleData);
 //     return response.data;
 //   },
@@ -101,8 +86,8 @@
 //   },
 // };
 
-// export default SalesService;
 
+// export default SalesService;
 
 import apiClient from './api';
 
@@ -126,11 +111,13 @@ export interface Sale {
   saleDate?: string;
   paymentMethod: 'Cash' | 'Credit Card' | 'Debit Card' | 'UPI' | 'Other';
   customerName: string;
-  customerContact?: string; // Optional field
+  customerContact?: string;
   billNo?: number;
   cgstAmount?: number;
   sgstAmount?: number;
   savedAmount?: number;
+  cashReceived?: number;
+  changeAmount?: number;
 }
 
 const SalesService = {
@@ -138,7 +125,7 @@ const SalesService = {
     let totalCGST = 0;
     let totalSGST = 0;
     let savedAmount = 0;
-    console.log(data.products);
+    
     data.products.forEach(product => {
       if (product.gstnumber) {
         const gstRate = product.gstnumber / 2;
@@ -188,6 +175,5 @@ const SalesService = {
     return response.data;
   },
 };
-
 
 export default SalesService;

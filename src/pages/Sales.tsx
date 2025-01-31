@@ -29,6 +29,8 @@ interface Transaction {
   savedAmount: string;
   sgstAmount: string;
   cgstAmount: string;
+  cashReceived: string;
+  changeAmount: string;
 }
 
 export default function Sales() {
@@ -323,8 +325,16 @@ export default function Sales() {
             
             <h3 className="text-lg font-medium mt-4 mb-2">Products:</h3>
             <p className="mb-2">
-              <strong>Save m</strong>{" "}
+              <strong>Save amt:</strong>{" "}
               {selectedTransaction.savedAmount}
+            </p>
+            <p className="mb-2">
+              <strong>CashReceived amt:</strong>{" "}
+              {selectedTransaction.cashReceived}
+            </p>
+            <p className="mb-2">
+              <strong>ChangeAmount amt:</strong>{" "}
+              {selectedTransaction.changeAmount}
             </p>
             <ul>
               {selectedTransaction?.products.map((product) => (
