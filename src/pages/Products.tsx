@@ -440,7 +440,7 @@ export default function Products() {
               >
                 Previous
               </button>
-              {[...Array(totalPages)].map((_, i) => (
+              {/* {[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i + 1}
                   onClick={() => paginate(i + 1)}
@@ -452,7 +452,7 @@ export default function Products() {
                 >
                   {i + 1}
                 </button>
-              ))}
+              ))} */}
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
@@ -472,7 +472,7 @@ export default function Products() {
       {/* Edit Modal */}
 
 
-{isModalOpen && updatedProduct && (
+      {isModalOpen && updatedProduct && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-4">
       <div className="flex justify-between items-center mb-4">
@@ -584,19 +584,40 @@ export default function Products() {
               />
             </div>
             <div>
+              <label className="block text-sm font-medium text-gray-700">Discount Percentage</label>
+              <input
+                type="number"
+                min={0}
+                max={100}
+                value={updatedProduct.discountPercentage || 0}
+                onChange={(e) => {
+                  const discount = parseFloat(e.target.value);
+                  const newSellingPrice = updatedProduct.mrpprice - (updatedProduct.mrpprice * discount) / 100;
+                  setUpdatedProduct({
+                    ...updatedProduct,
+                    discountPercentage: discount,
+                    sellingPrice: newSellingPrice.toFixed(2),
+                  });
+                }}
+                className="border border-gray-300 rounded-md p-2 w-full"
+                required
+              />
+              {editingProduct?.discountPercentage !== undefined && (
+                <p className="text-sm text-gray-500">Previous: {editingProduct.discountPercentage}%</p>
+              )}
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700">Selling Price</label>
               <input
                 type="number"
-                value={updatedProduct.sellingPrice}
-                onChange={(e) =>
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    sellingPrice: parseFloat(e.target.value),
-                  })
-                }
-                className="mt-1 block w-full border rounded-md shadow-sm p-2"
+                value={updatedProduct.sellingPrice || 0}
+                className="border border-gray-300 rounded-md p-2 w-full"
                 required
+                disabled
               />
+              {editingProduct?.sellingPrice !== undefined && (
+                <p className="text-sm text-gray-500">Previous: {editingProduct.sellingPrice}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">MRP Price</label>
@@ -653,6 +674,7 @@ export default function Products() {
     </div>
   </div>
 )}
+
 
 
 
