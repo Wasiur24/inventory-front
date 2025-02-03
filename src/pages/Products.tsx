@@ -39,6 +39,7 @@ export interface Product {
   manufacturingDate: string;
   expiryDate?: string;
   weight: number;
+  discountPercentage?: number;
 }
 
 export default function Products() {
@@ -454,6 +455,26 @@ export default function Products() {
                 </button>
               ))} */}
               <button
+  onClick={() => paginate(currentPage)}
+  className="px-3 py-1 rounded bg-blue-600 text-white"
+>
+  {currentPage}
+</button>
+<input
+  type="number"
+  min="1"
+  max={totalPages}
+  value={currentPage}
+  onChange={(e) => {
+    const pageNumber = Math.min(Math.max(1, Number(e.target.value)), totalPages); // Ensure within range
+    paginate(pageNumber);
+  }}
+  className="px-3 py-1 rounded border border-gray-300 text-center w-16"
+/>
+
+
+
+              <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 rounded ${
@@ -494,9 +515,14 @@ export default function Products() {
 
           const payload = {
             ...updatedProduct,
-            category: updatedProduct.category?._id || null,
-            supplier: updatedProduct.supplier?._id || null,
-          };
+            category: updatedProduct.category && updatedProduct.category._id 
+                ? String(updatedProduct.category._id) 
+                : null,
+            supplier: updatedProduct.supplier && updatedProduct.supplier._id 
+                ? String(updatedProduct.supplier._id) 
+                : null,
+        };
+        
 
           handleSaveProduct(payload);
         }}
@@ -530,7 +556,7 @@ export default function Products() {
                   })
                 }
                 className="mt-1 block w-full border rounded-md shadow-sm p-2"
-                required
+                
               >
                 <option value="" disabled>
                   Select a category
@@ -553,7 +579,7 @@ export default function Products() {
                   })
                 }
                 className="mt-1 block w-full border rounded-md shadow-sm p-2"
-                required
+                
               >
                 <option value="" disabled>
                   Select a supplier
@@ -723,6 +749,14 @@ export default function Products() {
                   </label>
                   <p className="mt-1 text-sm text-gray-900">
                     {viewingProduct.quantity}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                  Discount Percentage
+                  </label>
+                  <p className="mt-1 text-sm text-gray-900">
+                    {viewingProduct.discountPercentage}
                   </p>
                 </div>
                 <div>
