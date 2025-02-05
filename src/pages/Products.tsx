@@ -611,7 +611,7 @@ export default function Products() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Discount Percentage</label>
-              <input
+              {/* <input
                 type="number"
                 min={0}
                 max={100}
@@ -627,7 +627,27 @@ export default function Products() {
                 }}
                 className="border border-gray-300 rounded-md p-2 w-full"
                 required
-              />
+              /> */}
+              <input
+  type="number"
+  min={0}
+  max={100}
+  step="0.01" // Allows decimal values
+  value={updatedProduct.discountPercentage || 0}
+  onChange={(e) => {
+    const discount = parseFloat(e.target.value) || 0; // Handle NaN cases
+    const newSellingPrice =
+      updatedProduct.mrpprice - (updatedProduct.mrpprice * discount) / 100;
+    setUpdatedProduct({
+      ...updatedProduct,
+      discountPercentage: discount,
+      sellingPrice: newSellingPrice.toFixed(2),
+    });
+  }}
+  className="border border-gray-300 rounded-md p-2 w-full"
+  required
+/>
+
               {editingProduct?.discountPercentage !== undefined && (
                 <p className="text-sm text-gray-500">Previous: {editingProduct.discountPercentage}%</p>
               )}

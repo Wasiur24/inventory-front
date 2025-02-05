@@ -373,6 +373,7 @@ const handleSKUChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) 
                   Discount Percentage
                 </label>
                 <input
+                 step="0.01"
                   name="discountPercentage"
                   type="number"
                   min={0}
