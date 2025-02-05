@@ -78,213 +78,6 @@ const Selladd: React.FC = () => {
     }
   };
 
-  // const handleSkuChange = async (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const sku = e.target.value;
-  //   const updatedProducts = [...saleDetails.products];
-  //   const product = products.find((p) => p.sku === sku);
-
-  //   if (product) {
-  //     const existingProductIndex = saleDetails.products.findIndex(
-  //       (p, i) => i !== index && p.sku === sku
-  //     );
-
-  //     if (existingProductIndex !== -1) {
-  //       updatedProducts[existingProductIndex] = {
-  //         ...updatedProducts[existingProductIndex],
-  //         quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
-  //         totalAmount:
-  //           (updatedProducts[existingProductIndex].quantitySold + 1) *
-  //           updatedProducts[existingProductIndex].sellingPrice,
-  //       };
-
-  //       updatedProducts[index] = {
-  //         sku: "",
-  //         quantitySold: 1,
-  //         name: "",
-  //         sellingPrice: 0,
-  //         totalAmount: 0,
-  //         gstnumber: 0,
-  //         mrpprice: 0,
-  //       };
-
-  //       const totalSaleAmount = calculateTotalAmount(updatedProducts);
-  //       setSaleDetails((prev) => ({
-  //         ...prev,
-  //         products: updatedProducts,
-  //         totalSaleAmount,
-  //       }));
-  //     } else {
-  //       updatedProducts[index] = {
-  //         ...updatedProducts[index],
-  //         sku,
-  //         name: product.name,
-  //         sellingPrice: product.sellingPrice,
-  //         mrpprice: product.mrpprice,
-  //         gstnumber: product.category.gstnumber,
-  //         discountPercentage: product.discountPercentage || 0,
-  //         totalAmount:
-  //           product.sellingPrice * updatedProducts[index].quantitySold,
-  //       };
-
-  //       const totalSaleAmount = calculateTotalAmount(updatedProducts);
-  //       setSaleDetails((prev) => ({
-  //         ...prev,
-  //         products: updatedProducts,
-  //         totalSaleAmount,
-  //       }));
-
-  //       if (index === saleDetails.products.length - 1) {
-  //         addProductField(() => {
-  //           setTimeout(() => {
-  //             if (skuInputRefs.current[index + 1]) {
-  //               skuInputRefs.current[index + 1]?.focus();
-  //             }
-  //           }, 100);
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     updatedProducts[index] = {
-  //       ...updatedProducts[index],
-  //       sku,
-  //       name: "",
-  //       sellingPrice: 0,
-  //       totalAmount: 0,
-  //       mrpprice: 0,
-  //       gstnumber: 0,
-  //     };
-
-  //     const totalSaleAmount = calculateTotalAmount(updatedProducts);
-  //     setSaleDetails((prev) => ({
-  //       ...prev,
-  //       products: updatedProducts,
-  //       totalSaleAmount,
-  //     }));
-  //   }
-  // };
-
-  // const handleNameChange = async (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const name = e.target.value;
-  //   const updatedProducts = [...saleDetails.products];
-  //   const product = products.find((p) => p.name === name);
-
-  //   if (product) {
-  //     const existingProductIndex = saleDetails.products.findIndex(
-  //       (p, i) => i !== index && p.name === name
-  //     );
-
-  //     if (existingProductIndex !== -1) {
-  //       updatedProducts[existingProductIndex] = {
-  //         ...updatedProducts[existingProductIndex],
-  //         quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
-  //         totalAmount:
-  //           (updatedProducts[existingProductIndex].quantitySold + 1) *
-  //           updatedProducts[existingProductIndex].sellingPrice,
-  //       };
-
-  //       if (saleDetails.products.length > 1) {
-  //         updatedProducts.splice(index, 1);
-  //       } else {
-  //         updatedProducts[index] = {
-  //           sku: "",
-  //           quantitySold: 1,
-  //           name: "",
-  //           sellingPrice: 0,
-  //           totalAmount: 0,
-  //           gstnumber: 0,
-  //           mrpprice: 0,
-  //         };
-  //       }
-
-  //       const totalSaleAmount = calculateTotalAmount(updatedProducts);
-  //       setSaleDetails((prev) => ({
-  //         ...prev,
-  //         products: updatedProducts,
-  //         totalSaleAmount,
-  //       }));
-
-  //       setTimeout(() => {
-  //         if (nameInputRefs.current[0]) {
-  //           nameInputRefs.current[0]?.focus();
-  //         }
-  //       }, 100);
-  //     } else {
-  //       updatedProducts[index] = {
-  //         ...updatedProducts[index],
-  //         name,
-  //         sku: product.sku,
-  //         sellingPrice: product.sellingPrice,
-  //         mrpprice: product.mrpprice,
-  //         gstnumber: product.category.gstnumber,
-  //         discountPercentage: product.discountPercentage || 0,
-  //         totalAmount:
-  //           product.sellingPrice * updatedProducts[index].quantitySold,
-  //       };
-
-  //       const totalSaleAmount = calculateTotalAmount(updatedProducts);
-  //       setSaleDetails((prev) => ({
-  //         ...prev,
-  //         products: updatedProducts,
-  //         totalSaleAmount,
-  //       }));
-
-  //       if (index === saleDetails.products.length - 1) {
-  //         addProductField(() => {
-  //           setTimeout(() => {
-  //             if (nameInputRefs.current[index + 1]) {
-  //               nameInputRefs.current[index + 1]?.focus();
-  //             }
-  //           }, 100);
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     updatedProducts[index] = {
-  //       ...updatedProducts[index],
-  //       name,
-  //       sku: "",
-  //       sellingPrice: 0,
-  //       totalAmount: 0,
-  //       mrpprice: 0,
-  //       gstnumber: 0,
-  //     };
-
-  //     const totalSaleAmount = calculateTotalAmount(updatedProducts);
-  //     setSaleDetails((prev) => ({
-  //       ...prev,
-  //       products: updatedProducts,
-  //       totalSaleAmount,
-  //     }));
-  //   }
-  // };
-
-  // const handleQuantityChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const quantity = parseInt(e.target.value) || 0;
-  //   const updatedProducts = [...saleDetails.products];
-  //   updatedProducts[index] = {
-  //     ...updatedProducts[index],
-  //     quantitySold: quantity,
-  //     totalAmount: quantity * updatedProducts[index].sellingPrice,
-  //   };
-
-  //   const totalSaleAmount = calculateTotalAmount(updatedProducts);
-  //   setSaleDetails((prev) => ({
-  //     ...prev,
-  //     products: updatedProducts,
-  //     totalSaleAmount,
-  //   }));
-  // };
-
-  
   const handleSkuChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -292,24 +85,21 @@ const Selladd: React.FC = () => {
     const sku = e.target.value;
     const updatedProducts = [...saleDetails.products];
     const product = products.find((p) => p.sku === sku);
-  
+
     if (product) {
       const existingProductIndex = saleDetails.products.findIndex(
         (p, i) => i !== index && p.sku === sku
       );
-  
+
       if (existingProductIndex !== -1) {
         updatedProducts[existingProductIndex] = {
           ...updatedProducts[existingProductIndex],
           quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
-          totalAmount: parseFloat(
-            (
-              (updatedProducts[existingProductIndex].quantitySold + 1) *
-              updatedProducts[existingProductIndex].sellingPrice
-            ).toFixed(2)
-          ),
+          totalAmount:
+            (updatedProducts[existingProductIndex].quantitySold + 1) *
+            updatedProducts[existingProductIndex].sellingPrice,
         };
-  
+
         updatedProducts[index] = {
           sku: "",
           quantitySold: 1,
@@ -319,30 +109,161 @@ const Selladd: React.FC = () => {
           gstnumber: 0,
           mrpprice: 0,
         };
+
+        const totalSaleAmount = calculateTotalAmount(updatedProducts);
+        setSaleDetails((prev) => ({
+          ...prev,
+          products: updatedProducts,
+          totalSaleAmount,
+        }));
       } else {
         updatedProducts[index] = {
           ...updatedProducts[index],
           sku,
           name: product.name,
-          sellingPrice: parseFloat(product.sellingPrice.toFixed(2)),
-          mrpprice: parseFloat(product.mrpprice.toFixed(2)),
+          sellingPrice: product.sellingPrice,
+          mrpprice: product.mrpprice,
           gstnumber: product.category.gstnumber,
           discountPercentage: product.discountPercentage || 0,
-          totalAmount: parseFloat(
-            (product.sellingPrice * updatedProducts[index].quantitySold).toFixed(2)
-          ),
+          totalAmount:
+            product.sellingPrice * updatedProducts[index].quantitySold,
         };
+
+        const totalSaleAmount = calculateTotalAmount(updatedProducts);
+        setSaleDetails((prev) => ({
+          ...prev,
+          products: updatedProducts,
+          totalSaleAmount,
+        }));
+
+        if (index === saleDetails.products.length - 1) {
+          addProductField(() => {
+            setTimeout(() => {
+              if (skuInputRefs.current[index + 1]) {
+                skuInputRefs.current[index + 1]?.focus();
+              }
+            }, 100);
+          });
+        }
       }
+    } else {
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        sku,
+        name: "",
+        sellingPrice: 0,
+        totalAmount: 0,
+        mrpprice: 0,
+        gstnumber: 0,
+      };
+
+      const totalSaleAmount = calculateTotalAmount(updatedProducts);
+      setSaleDetails((prev) => ({
+        ...prev,
+        products: updatedProducts,
+        totalSaleAmount,
+      }));
     }
-    
-    const totalSaleAmount = calculateTotalAmount(updatedProducts);
-    setSaleDetails((prev) => ({
-      ...prev,
-      products: updatedProducts,
-      totalSaleAmount,
-    }));
   };
-  
+
+  const handleNameChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const name = e.target.value;
+    const updatedProducts = [...saleDetails.products];
+    const product = products.find((p) => p.name === name);
+
+    if (product) {
+      const existingProductIndex = saleDetails.products.findIndex(
+        (p, i) => i !== index && p.name === name
+      );
+
+      if (existingProductIndex !== -1) {
+        updatedProducts[existingProductIndex] = {
+          ...updatedProducts[existingProductIndex],
+          quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
+          totalAmount:
+            (updatedProducts[existingProductIndex].quantitySold + 1) *
+            updatedProducts[existingProductIndex].sellingPrice,
+        };
+
+        if (saleDetails.products.length > 1) {
+          updatedProducts.splice(index, 1);
+        } else {
+          updatedProducts[index] = {
+            sku: "",
+            quantitySold: 1,
+            name: "",
+            sellingPrice: 0,
+            totalAmount: 0,
+            gstnumber: 0,
+            mrpprice: 0,
+          };
+        }
+
+        const totalSaleAmount = calculateTotalAmount(updatedProducts);
+        setSaleDetails((prev) => ({
+          ...prev,
+          products: updatedProducts,
+          totalSaleAmount,
+        }));
+
+        setTimeout(() => {
+          if (nameInputRefs.current[0]) {
+            nameInputRefs.current[0]?.focus();
+          }
+        }, 100);
+      } else {
+        updatedProducts[index] = {
+          ...updatedProducts[index],
+          name,
+          sku: product.sku,
+          sellingPrice: product.sellingPrice,
+          mrpprice: product.mrpprice,
+          gstnumber: product.category.gstnumber,
+          discountPercentage: product.discountPercentage || 0,
+          totalAmount:
+            product.sellingPrice * updatedProducts[index].quantitySold,
+        };
+
+        const totalSaleAmount = calculateTotalAmount(updatedProducts);
+        setSaleDetails((prev) => ({
+          ...prev,
+          products: updatedProducts,
+          totalSaleAmount,
+        }));
+
+        if (index === saleDetails.products.length - 1) {
+          addProductField(() => {
+            setTimeout(() => {
+              if (nameInputRefs.current[index + 1]) {
+                nameInputRefs.current[index + 1]?.focus();
+              }
+            }, 100);
+          });
+        }
+      }
+    } else {
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        name,
+        sku: "",
+        sellingPrice: 0,
+        totalAmount: 0,
+        mrpprice: 0,
+        gstnumber: 0,
+      };
+
+      const totalSaleAmount = calculateTotalAmount(updatedProducts);
+      setSaleDetails((prev) => ({
+        ...prev,
+        products: updatedProducts,
+        totalSaleAmount,
+      }));
+    }
+  };
+
   const handleQuantityChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -352,11 +273,10 @@ const Selladd: React.FC = () => {
     updatedProducts[index] = {
       ...updatedProducts[index],
       quantitySold: quantity,
-      totalAmount: parseFloat(
-        (quantity * updatedProducts[index].sellingPrice).toFixed(2)
-      ),
+      // totalAmount: quantity * updatedProducts[index].sellingPrice,
+      totalAmount: parseFloat((quantity * updatedProducts[index].sellingPrice).toFixed(2)),
     };
-  
+
     const totalSaleAmount = calculateTotalAmount(updatedProducts);
     setSaleDetails((prev) => ({
       ...prev,
@@ -364,9 +284,7 @@ const Selladd: React.FC = () => {
       totalSaleAmount,
     }));
   };
-  
-  
-  
+
   const removeProductField = (index: number) => {
     if (saleDetails.products.length > 1) {
       const updatedProducts = saleDetails.products.filter(
