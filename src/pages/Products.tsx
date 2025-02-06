@@ -545,7 +545,7 @@ export default function Products() {
                 required
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700">Category</label>
               <select
                 value={updatedProduct.category?._id || ''}
@@ -590,7 +590,53 @@ export default function Products() {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
+            <div>
+  <label className="block text-sm font-medium text-gray-700">Category</label>
+  <select
+    value={updatedProduct.category?._id || ''}
+    onChange={(e) =>
+      setUpdatedProduct({
+        ...updatedProduct,
+        category: categories.find(cat => cat._id === e.target.value) || {},
+      })
+    }
+    className="mt-1 block w-full border rounded-md shadow-sm p-2"
+  >
+    <option value="" disabled>
+      Select a category
+    </option>
+    {categories.map((category) => (
+      <option key={category._id} value={category._id}>
+        {category.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+<div>
+  <label className="block text-sm font-medium text-gray-700">Supplier</label>
+  <select
+    value={updatedProduct.supplier?._id || updatedProduct.supplier || ''}
+    onChange={(e) =>
+      setUpdatedProduct({
+        ...updatedProduct,
+        supplier: suppliers.find(sup => sup._id === e.target.value) || {},
+      })
+    }
+    className="mt-1 block w-full border rounded-md shadow-sm p-2"
+  >
+    <option value="" disabled>
+      Select a supplier
+    </option>
+    {suppliers.map((supplier) => (
+      <option key={supplier._id} value={supplier._id}>
+        {supplier.name}
+      </option>
+    ))}
+  </select>
+</div>
+
           </div>
           {/* Right Column */}
           <div className="space-y-4">
@@ -611,23 +657,7 @@ export default function Products() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Discount Percentage</label>
-              {/* <input
-                type="number"
-                min={0}
-                max={100}
-                value={updatedProduct.discountPercentage || 0}
-                onChange={(e) => {
-                  const discount = parseFloat(e.target.value);
-                  const newSellingPrice = updatedProduct.mrpprice - (updatedProduct.mrpprice * discount) / 100;
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    discountPercentage: discount,
-                    sellingPrice: newSellingPrice.toFixed(2),
-                  });
-                }}
-                className="border border-gray-300 rounded-md p-2 w-full"
-                required
-              /> */}
+             
               <input
   type="number"
   min={0}
