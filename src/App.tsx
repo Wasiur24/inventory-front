@@ -18,11 +18,18 @@ import Categories from './pages/Category'
 import UpdateSupplier from './pages/UpdateSuppliers';
 import SalesUser from './pages/SalesUser';
 
-const getToken = () => localStorage.getItem('token');
+// const getToken = () => localStorage.getItem('token');
+// const getUserRole = () => {
+//   const user = JSON.parse(localStorage.getItem('user'));
+//   return user ? user.role : null;
+// };
+const getToken = () => sessionStorage.getItem('token');
+
 const getUserRole = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(sessionStorage.getItem('user'));
   return user ? user.role : null;
 };
+
 
 const ProtectedRoute = ({ allowedRoles }) => {
   const token = getToken();

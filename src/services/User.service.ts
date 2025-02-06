@@ -27,15 +27,27 @@ export interface RegisterData  {
 }
 
 const UserService = {
+  // login: async (credentials: LoginCredentials) => {
+  //   const response = await apiClient.post("/user/login", credentials);
+  //   console.log(response,"dsfghj");
+  //   if (response.data.token) {
+  //     localStorage.setItem("token", response.data.token);
+  //     localStorage.setItem("user", JSON.stringify(response.data.user));
+  //   }
+  //   return response.data;
+  // },
+
   login: async (credentials: LoginCredentials) => {
     const response = await apiClient.post("/user/login", credentials);
-    console.log(response,"dsfghj");
+    console.log(response, "dsfghj");
+
     if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("user", JSON.stringify(response.data.user));
     }
+
     return response.data;
-  },
+},
 
   register: async (data: RegisterData) => {
     const response = await apiClient.post("/user/register", data);
