@@ -545,7 +545,7 @@ export default function Products() {
                 required
               />
             </div>
-            {/* <div>
+            <div>
               <label className="block text-sm font-medium text-gray-700">Category</label>
               <select
                 value={updatedProduct.category?._id || ''}
@@ -590,8 +590,8 @@ export default function Products() {
                   </option>
                 ))}
               </select>
-            </div> */}
-            <div>
+            </div>
+            {/* <div>
   <label className="block text-sm font-medium text-gray-700">Category</label>
   <select
     value={updatedProduct.category?._id || ''}
@@ -635,7 +635,7 @@ export default function Products() {
       </option>
     ))}
   </select>
-</div>
+</div> */}
 
           </div>
           {/* Right Column */}
