@@ -63,7 +63,7 @@ export default function Sidebar() {
             </div>
             <div className="ml-3">
               <p className="text-sm font-medium text-gray-700">{user?.name || 'User'}</p>
-              <p className="text-xs text-gray-500">{user?.email || 'user@example.com'}</p>
+              <p className="text-xs text-gray-500">{user?.email || 'societystore9555@gmail.com'}</p>
             </div>
           </div>
           <button

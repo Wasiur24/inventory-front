@@ -82,7 +82,7 @@ const Selladd: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    const sku = e.target.value;
+    const sku = e.target.value.trim();
     const updatedProducts = [...saleDetails.products];
     const product = products.find((p) => p.sku === sku);
 
@@ -170,9 +170,11 @@ const Selladd: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    const name = e.target.value;
+    const name = e.target.value.trim();
     const updatedProducts = [...saleDetails.products];
-    const product = products.find((p) => p.name === name);
+    // const product = products.find((p) => p.name == name);
+    const product = products.find((p) => p.name.trim().toLowerCase() === name.trim().toLowerCase());
+
 
     if (product) {
       const existingProductIndex = saleDetails.products.findIndex(
