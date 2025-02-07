@@ -562,8 +562,8 @@ export default function Products() {
                   Select a category
                 </option>
                 {categories.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.name}
+                  <option key={category._id} value={category._id||updatedProduct.category?._id}>
+                    {category.name||updatedProduct.category?.name}
                   </option>
                 ))}
               </select>

@@ -419,6 +419,11 @@ const TemplateRecipt: React.FC<TemplateReciptProps> = ({
           </span>
           <span className="text-sm pr-4 py-1 font-bold">/- On MRP * * </span>
         </div>
+
+      </div>
+      <div className="mt-4 text-xs border-t border-black pt-2 text-white">
+        <p>NAME: {saleDetails.customerName}</p>
+        <p>MOB.: {saleDetails.customerContact}</p>
       </div>
     </div>
   );

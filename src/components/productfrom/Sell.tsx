@@ -330,6 +330,7 @@ const Selladd: React.FC = () => {
           totalSaleAmount,
         }));
   
+        // **Only add a new row if a valid product is found**
         if (index === saleDetails.products.length - 1) {
           addProductField(() => {
             setTimeout(() => {
@@ -357,16 +358,6 @@ const Selladd: React.FC = () => {
         products: updatedProducts,
         totalSaleAmount,
       }));
-  
-      if (index === saleDetails.products.length - 1) {
-        addProductField(() => {
-          setTimeout(() => {
-            if (nameInputRefs.current[index + 1]) {
-              nameInputRefs.current[index + 1]?.focus();
-            }
-          }, 100);
-        });
-      }
     }
   };
   
