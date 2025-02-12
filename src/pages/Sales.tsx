@@ -59,7 +59,7 @@ export default function Sales() {
 
       if (Array.isArray(sales)) {
         setTransactions(sales);
-        setFilteredTransactions(sales);
+        setFilteredTransactions(sales.reverse());
       } else {
         throw new Error("Unexpected data format");
       }
