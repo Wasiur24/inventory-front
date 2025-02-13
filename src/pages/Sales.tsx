@@ -174,7 +174,7 @@ export default function Sales() {
             Total Sale Amount
           </h3>
           <p className="mt-2 text-[20px] font-semibold text-gray-900">
-            ₹ {totalSaleAmount.toFixed(2)}
+            ₹ {totalSaleAmount}
           </p>
         </div>
       </div>
@@ -249,7 +249,7 @@ export default function Sales() {
                       {transaction.customerName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      ₹ {transaction.totalSaleAmount.toFixed(2)}
+                      ₹ {transaction.totalSaleAmount}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {transaction.paymentMethod}
