@@ -1063,23 +1063,39 @@ const Selladd: React.FC = () => {
     }
   };
   
+  // const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  //   const quantity = parseInt(e.target.value) || 0;
+  //   const updatedProducts = [...saleDetails.products];
+  //   updatedProducts[index] = {
+  //     ...updatedProducts[index],
+  //     quantitySold: quantity,
+  //     totalAmount: parseFloat((quantity * updatedProducts[index].sellingPrice).toFixed(2)),
+  //   };
+
+  //   const totalSaleAmount = calculateTotalAmount(updatedProducts);
+  //   setSaleDetails((prev) => ({
+  //     ...prev,
+  //     products: updatedProducts,
+  //     totalSaleAmount,
+  //   }));
+  // };
+
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const quantity = parseInt(e.target.value) || 0;
+    const quantity = parseFloat(e.target.value) || 0; // Allow floating point numbers
     const updatedProducts = [...saleDetails.products];
+  
     updatedProducts[index] = {
       ...updatedProducts[index],
       quantitySold: quantity,
-      totalAmount: parseFloat((quantity * updatedProducts[index].sellingPrice).toFixed(2)),
+      totalAmount: parseFloat((quantity * updatedProducts[index].sellingPrice).toFixed(2)), // Ensure two decimal places
     };
-
-    const totalSaleAmount = calculateTotalAmount(updatedProducts);
-    setSaleDetails((prev) => ({
-      ...prev,
+  
+    setSaleDetails((prevDetails) => ({
+      ...prevDetails,
       products: updatedProducts,
-      totalSaleAmount,
     }));
   };
-
+  
   const removeProductField = (index: number) => {
     if (saleDetails.products.length > 1) {
       const updatedProducts = saleDetails.products.filter((_, i) => i !== index);
@@ -1296,13 +1312,24 @@ const Selladd: React.FC = () => {
                         />
                       </td>
                       <td className="px-4 py-2 border-b">
-                        <input
+                        {/* <input
                           type="number"
                           value={product.quantitySold}
                           onChange={(e) => handleQuantityChange(e, index)}
                           min="1"
                           className="w-20 border rounded px-2 py-1"
-                        />
+                          
+                        /> */}
+                        <input
+  type="number"
+  value={product.quantitySold}
+  onChange={(e) => handleQuantityChange(e, index)}
+  min="0.1"
+  step="any"
+  className="w-20 border rounded px-2 py-1"
+/>
+
+                        
                       </td>
                       <td className="px-4 py-2 border-b">
                         ₹{product.totalAmount.toFixed(2)}
