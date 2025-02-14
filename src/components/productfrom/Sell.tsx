@@ -1088,6 +1088,8 @@ const Selladd: React.FC = () => {
     }
   };
   
+  
+  
   const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const name = e.target.value.trim();
     const updatedProducts = [...saleDetails.products];
