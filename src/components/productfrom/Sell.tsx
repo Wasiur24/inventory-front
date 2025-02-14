@@ -886,20 +886,111 @@ const Selladd: React.FC = () => {
     }
   };
 
+  // const handleSkuChange = async (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   index: number
+  // ) => {
+  //   const sku = e.target.value.trim();
+  //   const updatedProducts = [...saleDetails.products];
+  //   const product = products.find((p) => p.sku === sku);
+
+  //   if (product) {
+  //     const existingProductIndex = saleDetails.products.findIndex(
+  //       (p, i) => i !== index && p.sku === sku
+  //     );
+
+  //     if (existingProductIndex !== -1) {
+  //       updatedProducts[existingProductIndex] = {
+  //         ...updatedProducts[existingProductIndex],
+  //         quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
+  //         totalAmount:
+  //           (updatedProducts[existingProductIndex].quantitySold + 1) *
+  //           updatedProducts[existingProductIndex].sellingPrice,
+  //       };
+
+  //       updatedProducts[index] = {
+  //         sku: "",
+  //         quantitySold: 1,
+  //         name: "",
+  //         sellingPrice: 0,
+  //         totalAmount: 0,
+  //         gstnumber: 0,
+  //         mrpprice: 0,
+  //       };
+
+  //       const totalSaleAmount = calculateTotalAmount(updatedProducts);
+  //       setSaleDetails((prev) => ({
+  //         ...prev,
+  //         products: updatedProducts,
+  //         totalSaleAmount,
+  //       }));
+  //     } else {
+  //       updatedProducts[index] = {
+  //         ...updatedProducts[index],
+  //         sku,
+  //         name: product.name,
+  //         sellingPrice: product.sellingPrice,
+  //         mrpprice: product.mrpprice,
+  //         gstnumber: product.category.gstnumber,
+  //         discountPercentage: product.discountPercentage || 0,
+  //         totalAmount:
+  //           product.sellingPrice * updatedProducts[index].quantitySold,
+  //       };
+
+  //       const totalSaleAmount = calculateTotalAmount(updatedProducts);
+  //       setSaleDetails((prev) => ({
+  //         ...prev,
+  //         products: updatedProducts,
+  //         totalSaleAmount,
+  //       }));
+
+  //       if (index === saleDetails.products.length - 1) {
+  //         addProductField(() => {
+  //           setTimeout(() => {
+  //             if (skuInputRefs.current[index + 1]) {
+  //               skuInputRefs.current[index + 1]?.focus();
+  //             }
+  //           }, 100);
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     updatedProducts[index] = {
+  //       ...updatedProducts[index],
+  //       sku,
+  //       name: "",
+  //       sellingPrice: 0,
+  //       totalAmount: 0,
+  //       mrpprice: 0,
+  //       gstnumber: 0,
+  //     };
+
+  //     const totalSaleAmount = calculateTotalAmount(updatedProducts);
+  //     setSaleDetails((prev) => ({
+  //       ...prev,
+  //       products: updatedProducts,
+  //       totalSaleAmount,
+  //     }));
+  //   }
+  // };
+
   const handleSkuChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const sku = e.target.value.trim();
+    if (!sku) return; // Prevent empty input processing
+  
     const updatedProducts = [...saleDetails.products];
     const product = products.find((p) => p.sku === sku);
-
+  
     if (product) {
-      const existingProductIndex = saleDetails.products.findIndex(
+      const existingProductIndex = updatedProducts.findIndex(
         (p, i) => i !== index && p.sku === sku
       );
-
+  
       if (existingProductIndex !== -1) {
+        // Product already exists, update quantity and total
         updatedProducts[existingProductIndex] = {
           ...updatedProducts[existingProductIndex],
           quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
@@ -907,7 +998,8 @@ const Selladd: React.FC = () => {
             (updatedProducts[existingProductIndex].quantitySold + 1) *
             updatedProducts[existingProductIndex].sellingPrice,
         };
-
+  
+        // Reset the current input field (instead of adding a new one)
         updatedProducts[index] = {
           sku: "",
           quantitySold: 1,
@@ -917,14 +1009,22 @@ const Selladd: React.FC = () => {
           gstnumber: 0,
           mrpprice: 0,
         };
-
+  
         const totalSaleAmount = calculateTotalAmount(updatedProducts);
         setSaleDetails((prev) => ({
           ...prev,
           products: updatedProducts,
           totalSaleAmount,
         }));
+  
+        // Keep focus on the same input field
+        setTimeout(() => {
+          if (skuInputRefs.current[index]) {
+            skuInputRefs.current[index].focus();
+          }
+        }, 100);
       } else {
+        // If product is new, add it normally
         updatedProducts[index] = {
           ...updatedProducts[index],
           sku,
@@ -933,47 +1033,61 @@ const Selladd: React.FC = () => {
           mrpprice: product.mrpprice,
           gstnumber: product.category.gstnumber,
           discountPercentage: product.discountPercentage || 0,
-          totalAmount:
-            product.sellingPrice * updatedProducts[index].quantitySold,
+          totalAmount: product.sellingPrice * updatedProducts[index].quantitySold,
         };
-
+  
         const totalSaleAmount = calculateTotalAmount(updatedProducts);
         setSaleDetails((prev) => ({
           ...prev,
           products: updatedProducts,
           totalSaleAmount,
         }));
-
+  
+        // Move focus to next input field
         if (index === saleDetails.products.length - 1) {
           addProductField(() => {
             setTimeout(() => {
               if (skuInputRefs.current[index + 1]) {
-                skuInputRefs.current[index + 1]?.focus();
+                skuInputRefs.current[index + 1].focus();
               }
             }, 100);
           });
+        } else {
+          setTimeout(() => {
+            if (skuInputRefs.current[index + 1]) {
+              skuInputRefs.current[index + 1].focus();
+            }
+          }, 100);
         }
       }
     } else {
+      // If SKU does not exist, keep focus on the same input field and reset the value
       updatedProducts[index] = {
         ...updatedProducts[index],
-        sku,
+        sku: "",
         name: "",
         sellingPrice: 0,
         totalAmount: 0,
         mrpprice: 0,
         gstnumber: 0,
       };
-
+  
       const totalSaleAmount = calculateTotalAmount(updatedProducts);
       setSaleDetails((prev) => ({
         ...prev,
         products: updatedProducts,
         totalSaleAmount,
       }));
+  
+      // Keep focus on the same input
+      setTimeout(() => {
+        if (skuInputRefs.current[index]) {
+          skuInputRefs.current[index].focus();
+        }
+      }, 100);
     }
   };
-
+  
   const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const name = e.target.value.trim();
     const updatedProducts = [...saleDetails.products];
@@ -1423,9 +1537,9 @@ const Selladd: React.FC = () => {
                     value={saleDetails.cashReceived}
                     onChange={handleCashReceived}
                     className="w-full border rounded-md p-2"
-                    min={saleDetails.totalSaleAmount}
+                    // min={saleDetails.totalSaleAmount}
                     placeholder="Enter amount received"
-                    required
+                    
                   />
                 </div>
                 <div>
