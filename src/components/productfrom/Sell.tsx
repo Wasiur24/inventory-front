@@ -832,6 +832,8 @@ const Selladd: React.FC = () => {
     };
 
     const totalSaleAmount = calculateTotalAmount(updatedProducts);
+    console.log(updatedProducts,478);
+    
     setSaleDetails(prev => ({
       ...prev,
       products: updatedProducts,
@@ -991,25 +993,26 @@ const Selladd: React.FC = () => {
       );
   
       if (existingProductIndex !== -1) {
-        // If the product already exists, increase quantity and update total amount
+        // If product exists, increase quantity and update total amount
         updatedProducts[existingProductIndex] = {
           ...updatedProducts[existingProductIndex],
           quantitySold: (updatedProducts[existingProductIndex].quantitySold || 0) + 1,
           totalAmount:
             (updatedProducts[existingProductIndex].quantitySold + 1) *
-            updatedProducts[existingProductIndex].sellingPrice?.toFixed(), // Update totalAmount correctly
+            updatedProducts[existingProductIndex].sellingPrice,
         };
   
-        // **Keep the current row but clear SKU input field (instead of removing)**
-        updatedProducts[index] = { ...updatedProducts[index], sku: "" };
+        // Do not clear SKU if barcode scanning
+        if (!e.target.dataset.scanned) {
+          updatedProducts[index] = { ...updatedProducts[index], sku: "" };
+        }
   
         setSaleDetails((prev) => ({
           ...prev,
           products: updatedProducts,
-          totalSaleAmount: calculateTotalAmount(updatedProducts), // Ensure total sale amount is updated
+          totalSaleAmount: calculateTotalAmount(updatedProducts),
         }));
   
-        // **Keep focus on the cleared input field**
         setTimeout(() => {
           skuInputRefs.current[index]?.focus();
         }, 100);
@@ -1022,14 +1025,14 @@ const Selladd: React.FC = () => {
           mrpprice: product.mrpprice,
           gstnumber: product.category?.gstnumber || 0,
           discountPercentage: product.discountPercentage || 0,
-          quantitySold: 1, // Default quantity
-          totalAmount: product.sellingPrice, // Correct total amount
+          quantitySold: 1,
+          totalAmount: product.sellingPrice,
         };
   
         setSaleDetails((prev) => ({
           ...prev,
           products: updatedProducts,
-          totalSaleAmount: calculateTotalAmount(updatedProducts), // Ensure total amount is updated
+          totalSaleAmount: calculateTotalAmount(updatedProducts),
         }));
   
         // Move focus to the next input field for barcode scanning
@@ -1054,7 +1057,6 @@ const Selladd: React.FC = () => {
         products: updatedProducts,
       }));
   
-      // Keep focus on the same input field
       setTimeout(() => {
         skuInputRefs.current[index]?.focus();
       }, 100);
