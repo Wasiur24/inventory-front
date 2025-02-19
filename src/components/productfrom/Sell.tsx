@@ -1021,95 +1021,94 @@ const Selladd: React.FC = () => {
     index: number
   ) => {
     const sku = e.target.value.trim();
-    console.log(sku, 478);
     if (!sku) return;
+  
     const updatedProducts = [...saleDetails.products];
     const product = products.find((p) => p.sku === sku);
-
+  
     if (product) {
+      // Check if SKU already exists in another row (excluding current index)
       const existingProductIndex = updatedProducts.findIndex(
         (p, i) => i !== index && p.sku === sku
       );
-
+  
       if (existingProductIndex !== -1) {
+        // If SKU exists, increase quantitySold for that row
         updatedProducts[existingProductIndex] = {
           ...updatedProducts[existingProductIndex],
           quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
-          totalAmount: (updatedProducts[existingProductIndex].quantitySold + 1) * 
-                      updatedProducts[existingProductIndex].sellingPrice
+          totalAmount:
+            (updatedProducts[existingProductIndex].quantitySold + 1) *
+            updatedProducts[existingProductIndex].sellingPrice,
         };
-
-        if (!e.target.dataset.scanned) {
-          updatedProducts[index] = {
-            ...updatedProducts[index],
-            sku: ""
-          };
-        }
-
+  
+        // Clear only the current input field
+        updatedProducts[index] = {
+          ...updatedProducts[index],
+          sku: "",
+        };
+  
         setSaleDetails((prev) => ({
           ...prev,
           products: updatedProducts,
-          totalSaleAmount: calculateTotalAmount(updatedProducts)
+          totalSaleAmount: calculateTotalAmount(updatedProducts),
         }));
-
+  
+        // Ensure the input field is reset visually
         setTimeout(() => {
           if (skuInputRefs.current[index]) {
             skuInputRefs.current[index].value = "";
             skuInputRefs.current[index].focus();
           }
         }, 100);
-      } else {
-        updatedProducts[index] = {
-          sku,
-          name: product.name,
-          sellingPrice: product.sellingPrice,
-          mrpprice: product.mrpprice,
-          gstnumber: product.category?.gstnumber || 0,
-          discountPercentage: product.discountPercentage || 0,
-          quantitySold: 1,
-          totalAmount: product.sellingPrice,
-          originalSellingPrice: product.sellingPrice
-        };
-
-        setSaleDetails((prev) => ({
-          ...prev,
-          products: updatedProducts,
-          totalSaleAmount: calculateTotalAmount(updatedProducts)
-        }));
-
-        if (index === saleDetails.products.length - 1) {
-          addProductField(() => {
-            setTimeout(() => {
-              if (skuInputRefs.current[index + 1]) {
-                skuInputRefs.current[index + 1].focus();
-              }
-            }, 100);
-          });
-        }
+  
+        return; // Exit function early
       }
-    } else {
-      toast.error(`Product with SKU ${sku} not found`);
+  
+      // If SKU is new, add it as a new product row
       updatedProducts[index] = {
-        ...updatedProducts[index],
-        sku: ""
+        sku,
+        name: product.name,
+        sellingPrice: product.sellingPrice,
+        mrpprice: product.mrpprice,
+        gstnumber: product.category?.gstnumber || 0,
+        discountPercentage: product.discountPercentage || 0,
+        quantitySold: 1,
+        totalAmount: product.sellingPrice,
+        originalSellingPrice: product.sellingPrice,
       };
-
+  
       setSaleDetails((prev) => ({
         ...prev,
-        products: updatedProducts
+        products: updatedProducts,
+        totalSaleAmount: calculateTotalAmount(updatedProducts),
       }));
-
-      setTimeout(() => {
-        if (skuInputRefs.current[index]) {
-          skuInputRefs.current[index].focus();
-        }
-      }, 100);
+  
+      // If it's the last row, add a new one and focus on next field
+      if (index === saleDetails.products.length - 1) {
+        addProductField(() => {
+          setTimeout(() => {
+            if (skuInputRefs.current[index + 1]) {
+              skuInputRefs.current[index + 1].focus();
+            }
+          }, 100);
+        });
+      }
+    } else {
+      // SKU not found, show error but DO NOT clear input
+      toast.error(`Product with SKU ${sku} not found`);
     }
-
-    if (e.target.dataset.scanned) {
-      delete e.target.dataset.scanned;
-    }
+  
+    // Ensure focus remains on the input field
+    setTimeout(() => {
+      if (skuInputRefs.current[index]) {
+        skuInputRefs.current[index].focus();
+      }
+    }, 100);
   };
+  
+  
+  
   
   
 
