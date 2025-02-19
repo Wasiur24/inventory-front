@@ -863,8 +863,10 @@ const Selladd: React.FC = () => {
       totalSaleAmount
     }));
   };
+  const [scannedSku, setScannedSku] = useState<string>("");
 
   const addProductField = (callback?: () => void) => {
+    setScannedSku("")
     setSaleDetails((prev) => ({
       ...prev,
       products: [
@@ -975,49 +977,88 @@ const Selladd: React.FC = () => {
   //     }));
   //   }
   // };
+  // const handleBarcodeScanner = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+  //   if (e.key === 'Enter') {
+  //     e.preventDefault();
+  //     const input = e.target as HTMLInputElement;
+  //     const sku = input.value.trim();
+      
+  //     input.dataset.scanned = 'true';
+      
+  //     handleSkuChange({
+  //       target: input,
+  //       type: 'change'
+  //     } as React.ChangeEvent<HTMLInputElement>, index);
+  //   }
+  // };
 
+  const handleBarcodeScanner = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const sku = saleDetails.products[index].sku.trim();
+  
+      if (sku) {
+        handleSkuChange(
+          { target: { value: sku }, type: "change" } as React.ChangeEvent<HTMLInputElement>,
+          index
+        );
+      }
+    } else if (e.key.length === 1) {
+      e.preventDefault(); // Prevent duplicate character entry
+      setSaleDetails((prev) => {
+        const newProducts = [...prev.products];
+        newProducts[index] = { ...newProducts[index], sku: newProducts[index].sku + e.key };
+        return { ...prev, products: newProducts };
+      });
+    }
+  };
+  
+  
+   
+  
   const handleSkuChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const sku = e.target.value.trim();
-    if (!sku) return; // Prevent processing if empty input
-  
+    console.log(sku, 478);
+    if (!sku) return;
     const updatedProducts = [...saleDetails.products];
     const product = products.find((p) => p.sku === sku);
-  
+
     if (product) {
-      // Check if the product already exists in the sale list
       const existingProductIndex = updatedProducts.findIndex(
         (p, i) => i !== index && p.sku === sku
       );
-  
+
       if (existingProductIndex !== -1) {
-        // If product exists, increase quantity and update total amount
         updatedProducts[existingProductIndex] = {
           ...updatedProducts[existingProductIndex],
-          quantitySold: (updatedProducts[existingProductIndex].quantitySold || 0) + 1,
-          totalAmount:
-            (updatedProducts[existingProductIndex].quantitySold + 1) *
-            updatedProducts[existingProductIndex].sellingPrice,
+          quantitySold: updatedProducts[existingProductIndex].quantitySold + 1,
+          totalAmount: (updatedProducts[existingProductIndex].quantitySold + 1) * 
+                      updatedProducts[existingProductIndex].sellingPrice
         };
-  
-        // Do not clear SKU if barcode scanning
+
         if (!e.target.dataset.scanned) {
-          updatedProducts[index] = { ...updatedProducts[index], sku: "" };
+          updatedProducts[index] = {
+            ...updatedProducts[index],
+            sku: ""
+          };
         }
-  
+
         setSaleDetails((prev) => ({
           ...prev,
           products: updatedProducts,
-          totalSaleAmount: calculateTotalAmount(updatedProducts),
+          totalSaleAmount: calculateTotalAmount(updatedProducts)
         }));
-  
+
         setTimeout(() => {
-          skuInputRefs.current[index]?.focus();
+          if (skuInputRefs.current[index]) {
+            skuInputRefs.current[index].value = "";
+            skuInputRefs.current[index].focus();
+          }
         }, 100);
       } else {
-        // If the product is new, add it to the list with default quantity 1
         updatedProducts[index] = {
           sku,
           name: product.name,
@@ -1027,42 +1068,48 @@ const Selladd: React.FC = () => {
           discountPercentage: product.discountPercentage || 0,
           quantitySold: 1,
           totalAmount: product.sellingPrice,
+          originalSellingPrice: product.sellingPrice
         };
-  
+
         setSaleDetails((prev) => ({
           ...prev,
           products: updatedProducts,
-          totalSaleAmount: calculateTotalAmount(updatedProducts),
+          totalSaleAmount: calculateTotalAmount(updatedProducts)
         }));
-  
-        // Move focus to the next input field for barcode scanning
+
         if (index === saleDetails.products.length - 1) {
           addProductField(() => {
             setTimeout(() => {
-              skuInputRefs.current[index + 1]?.focus();
+              if (skuInputRefs.current[index + 1]) {
+                skuInputRefs.current[index + 1].focus();
+              }
             }, 100);
           });
-        } else {
-          setTimeout(() => {
-            skuInputRefs.current[index + 1]?.focus();
-          }, 100);
         }
       }
     } else {
-      // If SKU does not exist, do NOT add an empty row
-      updatedProducts[index] = { ...updatedProducts[index], sku: "" };
-  
+      toast.error(`Product with SKU ${sku} not found`);
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        sku: ""
+      };
+
       setSaleDetails((prev) => ({
         ...prev,
-        products: updatedProducts,
+        products: updatedProducts
       }));
-  
+
       setTimeout(() => {
-        skuInputRefs.current[index]?.focus();
+        if (skuInputRefs.current[index]) {
+          skuInputRefs.current[index].focus();
+        }
       }, 100);
     }
+
+    if (e.target.dataset.scanned) {
+      delete e.target.dataset.scanned;
+    }
   };
-  
   
   
 
@@ -1350,16 +1397,36 @@ const Selladd: React.FC = () => {
                 <tbody>
                   {saleDetails.products.map((product, index) => (
                     <tr key={index}>
-                      <td className="px-4 py-2 border-b">
-                        <input
-                          type="text"
-                          ref={(el) => (skuInputRefs.current[index] = el)}
-                          value={product.sku}
-                          onChange={(e) => handleSkuChange(e, index)}
-                          className="w-full border rounded px-2 py-1"
-                          placeholder="Enter SKU"
-                        />
-                      </td>
+                           <td className="px-4 py-2 border-b">
+        {/* <input
+          type="text"
+          ref={(el) => (skuInputRefs.current[index] = el)}
+          value={product.sku}
+          onChange={(e) => handleSkuChange(e, index)}
+          onKeyDown={(e) => handleBarcodeScanner(e, index)}
+          className="w-full border rounded px-2 py-1"
+          placeholder="Scan or Enter SKU"
+          autoComplete="off"
+        /> */}
+  <input
+  type="text"
+  ref={(el) => (skuInputRefs.current[index] = el)}
+  value={saleDetails.products[index].sku} // Use product SKU directly
+  onChange={(e) => {
+    const value = e.target.value;
+    setSaleDetails((prev) => {
+      const newProducts = [...prev.products];
+      newProducts[index] = { ...newProducts[index], sku: value };
+      return { ...prev, products: newProducts };
+    });
+  }}
+  onKeyDown={(e) => handleBarcodeScanner(e, index)}
+  className="w-full border rounded px-2 py-1"
+  placeholder="Scan or Enter SKU"
+  autoComplete="off"
+/>
+
+      </td>
                       <td className="px-4 py-2 border-b">
                         <input
                           type="text"
