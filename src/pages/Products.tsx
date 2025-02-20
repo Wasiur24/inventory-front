@@ -202,6 +202,34 @@ export default function Products() {
     setSearchTerm("");
   };
 
+const handleCategoryChange = (e)=>{
+  // console.log(e.target,528);
+  const selectedCategoryId = e.target.value; // Selected category _id
+  const selectedOption = e.target.options[e.target.selectedIndex]; // Get the selected option element
+  const selectedOptionId = selectedOption.id;
+  console.log(selectedOptionId,528);
+  
+  setUpdatedProduct({
+    ...updatedProduct,
+    category: categories[selectedOptionId],
+  })
+}
+useEffect(() => {
+  if (editingProduct) {
+    const updatedProduct = {
+      ...editingProduct,
+      category: {
+        ...editingProduct.category,
+        _id: editingProduct.category?._id || editingProduct.category?.id, // Ensure correct ID assignment
+      },
+    };
+    setUpdatedProduct(updatedProduct)
+    console.log(updatedProduct,528);
+    
+  }
+}, [editingProduct]);
+
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -548,12 +576,9 @@ export default function Products() {
             <div>
               <label className="block text-sm font-medium text-gray-700">Category</label>
               <select
-                value={updatedProduct.category?._id || ''}
-                onChange={(e) =>
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    category: { ...updatedProduct.category, _id: e.target.value },
-                  })
+                value={updatedProduct.category._id}
+                onChange={
+                  handleCategoryChange
                 }
                 className="mt-1 block w-full border rounded-md shadow-sm p-2"
                 
@@ -561,36 +586,43 @@ export default function Products() {
                 <option value="" disabled>
                   Select a category
                 </option>
-                {categories.map((category) => (
-                  <option key={category._id} value={category._id||updatedProduct.category?._id}>
+                {categories.map((category,index) => (
+                  <option key={index} value={category._id}  id={index}>
                     {category.name||updatedProduct.category?.name}
                   </option>
                 ))}
               </select>
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700">Supplier</label>
-              <select
-                value={updatedProduct.supplier?._id || ''}
-                onChange={(e) =>
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    supplier: { ...updatedProduct.supplier, _id: e.target.value },
-                  })
-                }
-                className="mt-1 block w-full border rounded-md shadow-sm p-2"
-                
-              >
-                <option value="" disabled>
-                  Select a supplier
-                </option>
-                {suppliers.map((supplier) => (
-                  <option key={supplier._id} value={supplier._id}>
-                    {supplier.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+  <label className="block text-sm font-medium text-gray-700">Supplier</label>
+  <select
+    value={updatedProduct.supplier?._id || ""}
+    onChange={(e) =>
+      setUpdatedProduct({
+        ...updatedProduct,
+        supplier: { ...updatedProduct.supplier, _id: e.target.value },
+      })
+    }
+    className="mt-1 block w-full border rounded-md shadow-sm p-2"
+  >
+    <option value="" disabled>
+      Select a supplier
+    </option>
+    {suppliers.map((supplier) => (
+      <option key={supplier._id} value={supplier._id} selected={supplier._id === updatedProduct.supplier?._id}>
+        {supplier.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+            
+
+
+
+         
+
             {/* <div>
   <label className="block text-sm font-medium text-gray-700">Category</label>
   <select
