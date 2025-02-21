@@ -169,9 +169,18 @@ export default function Products() {
 
   const handleSaveProduct = async () => {
     if (!editingProduct || !updatedProduct) return;
-
+  
+    // Ensure supplier is stored correctly
+    const payload = {
+      ...updatedProduct,
+      supplier:
+        updatedProduct.supplier && updatedProduct.supplier._id
+          ? String(updatedProduct.supplier._id)
+          : null, // If supplier is invalid, set it to null
+    };
+  
     try {
-      await ProductService.updateProduct(editingProduct._id, updatedProduct);
+      await ProductService.updateProduct(editingProduct._id, payload);
       toast.success("Product updated successfully!");
       setIsModalOpen(false);
       setEditingProduct(null);
@@ -179,9 +188,31 @@ export default function Products() {
       fetchProducts();
     } catch (error) {
       console.error("Failed to update product:", error);
-      toast.error("Failed to update product. Please try again.");
+  
+      // Handle specific supplier validation error
+      if (
+        error.response?.data?.error?.includes("Cast to ObjectId failed") &&
+        error.response?.data?.error?.includes("supplier")
+      ) {
+        payload.supplier = null; // Set supplier to null and retry request
+  
+        try {
+          await ProductService.updateProduct(editingProduct._id, payload);
+          toast.success("Product updated successfully (supplier set to null).");
+          setIsModalOpen(false);
+          setEditingProduct(null);
+          setUpdatedProduct(null);
+          fetchProducts();
+        } catch (retryError) {
+          console.error("Retry failed:", retryError);
+          toast.error("Failed to update product. Please try again.");
+        }
+      } else {
+        toast.error("Failed to update product. Please try again.");
+      }
     }
   };
+  
 
   // const handlePrint = useReactToPrint({
   //   content: () => printRef.current,
