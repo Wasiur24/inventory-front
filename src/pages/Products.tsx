@@ -688,45 +688,54 @@ useEffect(() => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Discount Percentage</label>
-             
-              <input
-  type="number"
-  min={0}
-  max={100}
-  step="0.01" // Allows decimal values
-  value={updatedProduct.discountPercentage || 0}
-  onChange={(e) => {
-    const discount = parseFloat(e.target.value) || 0; // Handle NaN cases
-    const newSellingPrice =
-      updatedProduct.mrpprice - (updatedProduct.mrpprice * discount) / 100;
-    setUpdatedProduct({
-      ...updatedProduct,
-      discountPercentage: discount,
-      sellingPrice: newSellingPrice.toFixed(2),
-    });
-  }}
-  className="border border-gray-300 rounded-md p-2 w-full"
-  required
-/>
+  <label className="block text-sm font-medium text-gray-700">Discount Percentage</label>
+  <input
+    type="number"
+    min={0}
+    max={100}
+    step="0.01" // Allows decimal values
+    value={updatedProduct.discountPercentage || 0}
+    onChange={(e) => {
+      const discount = parseFloat(e.target.value) || 0; // Handle NaN cases
+      const newSellingPrice = updatedProduct.mrpprice - (updatedProduct.mrpprice * discount) / 100;
+      setUpdatedProduct({
+        ...updatedProduct,
+        discountPercentage: discount,
+        sellingPrice: parseFloat(newSellingPrice.toFixed(2)), // Convert to number
+      });
+    }}
+    className="border border-gray-300 rounded-md p-2 w-full"
+    required
+  />
+  {editingProduct?.discountPercentage !== undefined && (
+    <p className="text-sm text-gray-500">Previous: {editingProduct.discountPercentage}%</p>
+  )}
+</div>
 
-              {editingProduct?.discountPercentage !== undefined && (
-                <p className="text-sm text-gray-500">Previous: {editingProduct.discountPercentage}%</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Selling Price</label>
-              <input
-                type="number"
-                value={updatedProduct.sellingPrice || 0}
-                className="border border-gray-300 rounded-md p-2 w-full"
-                required
-                disabled
-              />
-              {editingProduct?.sellingPrice !== undefined && (
-                <p className="text-sm text-gray-500">Previous: {editingProduct.sellingPrice}</p>
-              )}
-            </div>
+<div>
+  <label className="block text-sm font-medium text-gray-700">Selling Price</label>
+  <input
+    type="number"
+    min={0}
+    step="0.01"
+    value={updatedProduct.sellingPrice || 0}
+    onChange={(e) => {
+      const sellingPrice = parseFloat(e.target.value) || 0;
+      const newDiscount = ((updatedProduct.mrpprice - sellingPrice) / updatedProduct.mrpprice) * 100;
+      setUpdatedProduct({
+        ...updatedProduct,
+        sellingPrice,
+        discountPercentage: parseFloat(newDiscount.toFixed(2)), // Convert to number
+      });
+    }}
+    className="border border-gray-300 rounded-md p-2 w-full"
+    required
+  />
+  {editingProduct?.sellingPrice !== undefined && (
+    <p className="text-sm text-gray-500">Previous: {editingProduct.sellingPrice}</p>
+  )}
+</div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">MRP Price</label>
               <input

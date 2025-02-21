@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Package, Users, ShoppingCart, BarChart, LogOut,Tag } from 'lucide-react';
-
+import logo from "./Logo/SocietyStoreLogo.png";
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', roles: ['admin'] },
   { icon: Package, label: 'Products', path: '/products', roles: ['admin'] },
@@ -28,10 +28,21 @@ export default function Sidebar() {
   return (
     <div className="h-full w-64 bg-white border-r border-gray-200">
       <div className="flex flex-col h-full">
-        <div className="flex items-center h-16 px-4 border-b border-gray-200">
-          <Package className="h-8 w-8 text-blue-600" />
-          <span className="ml-2 text-xl font-semibold">Society Store</span>
-        </div>
+        {/* <div className="flex items-center h-16 px-4 border-b border-gray-200">
+          <Package className="h-8 w-8 text-red-600" />
+          <span className="ml-2 text-xl font-semibold"><img src="./Logo/SocietyStoreLogo.png" alt="" /></span>
+        </div> */}
+         <div className="flex items-center h-16 px-4 border-b border-gray-200">
+      {/* <Package className="h-8 w-8 text-red-600" /> */}
+      <span className="ml-2   text-xl font-semibold">
+        <img 
+          src={logo} 
+          className='w-[115px] h-[115px] ml-9'
+          alt="Society Store Logo" 
+          onError={(e) => { e.target.src = "https://kjdgklsdfgsj.com"; }} 
+        />
+      </span>
+    </div>
         <nav className="flex-1 p-4 space-y-1">
           {menuItems
             .filter((item) => item.roles.includes(user?.role)) // Filter based on user role

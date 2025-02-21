@@ -105,28 +105,35 @@ const AddProduct: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     const updatedProducts = [...products];
+  
     if (name === "discountPercentage") {
+      const discountValue = parseFloat(value) || 0;
+      const mrp = updatedProducts[index].mrpprice || 0;
+  
       updatedProducts[index] = {
         ...updatedProducts[index],
-        [name]: value,
-        sellingPrice:
-          updatedProducts[index].mrpprice -
-          (updatedProducts[index].mrpprice * parseFloat(value)) / 100,
+        discountPercentage: discountValue,
+        sellingPrice: mrp - (mrp * discountValue) / 100,
+      };
+    } else if (name === "sellingPrice") {
+      const sellingPriceValue = parseFloat(value) || 0;
+      const mrp = updatedProducts[index].mrpprice || 0;
+  
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        sellingPrice: sellingPriceValue,
+        discountPercentage: ((mrp - sellingPriceValue) / mrp) * 100,
+      };
+    } else {
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        [name]: name.includes("Date") ? value : parseValue(value, name),
       };
     }
-
-    updatedProducts[index] = {
-      ...updatedProducts[index],
-      [name]: name.includes("Date") ? value : parseValue(value, name),
-    };
-
+  
     setProducts(updatedProducts);
-    if (e.target.id === "sku") {
-      console.log(e.target.id);
-      const firstInput = document.querySelector<HTMLInputElement>("#name");
-      if (firstInput) firstInput.focus();
-    }
   };
+  
 
   const parseValue = (value: string, name: string): string | number => {
     if (
@@ -390,14 +397,14 @@ const handleSKUChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) 
                   Selling Price
                 </label>
                 <input
-                  name="sellingPrice"
-                  type="number"
-                  value={product.sellingPrice}
-                  onChange={(e) => handleChange(index, e)}
-                  className="border border-gray-300 rounded-md p-2 w-full"
-                  required
-                  disabled
-                />
+  name="sellingPrice"
+  type="number"
+  value={product.sellingPrice}
+  onChange={(e) => handleChange(index, e)}
+  className="border border-gray-300 rounded-md p-2 w-full"
+  required
+/>
+
               </div>
 
               <div>
