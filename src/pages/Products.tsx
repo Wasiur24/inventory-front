@@ -97,6 +97,7 @@ export default function Products() {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchProducts();
@@ -260,7 +261,41 @@ useEffect(() => {
   }
 }, [editingProduct]);
 
+const [searchSku, setSearchSku] = useState<string>(''); // State for the SKU input
+const [productBySku, setProductBySku] = useState<Product | null>(null); // State for the fetched product
+// const [loading, setLoading] = useState<boolean>(false); // Loading state
+const [error, setError] = useState<string | null>(null); // Error state
+const [isModalOpenbb, setIsModalOpenbb] = useState(false);
+const handleFetchProduct = async () => {
+  if (!searchSku) {
+    setError('Please enter a valid SKU');
+    return;
+  }
 
+  try {
+    // setLoading(true);
+    
+    setError(null);
+    const productData = await ProductService.getProductBySkuID(searchSku); // Call the function with searchSku
+    if (productData) {
+      setProductBySku(productData); // Set the product data
+      setIsModalOpenbb(true);
+    } else {
+      setError('Product not found'); // Handle case where product is not found
+      setProductBySku(null);
+    }
+  } catch (err) {
+    console.error('Error fetching product:', err);
+    setError('Failed to fetch product'); // Handle errors
+    setProductBySku(null);
+  } finally {
+    // setLoading(false); // Stop loading
+  }
+}
+
+const closeModal = () => {
+  setIsModalOpenbb(false);
+};
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -273,6 +308,59 @@ useEffect(() => {
           Add Product
         </button>
       </div>
+      <div>
+      <h1>Product Details</h1>
+      <div className="my-3 mx-2  ">
+        <label htmlFor="sku-input">Enter SKU: </label>
+        <input
+        className="border-separate p-2 my-1 m-3"
+          id="sku-input"
+          type="text"
+          value={searchSku}
+          onChange={(e) => setSearchSku(e.target.value)}
+          placeholder="Enter SKU"
+        />
+        <button onClick={handleFetchProduct} disabled={loading}
+        className="p-2 bg-[#41c149bc] rounded-lg"
+        >
+          {loading ? 'Fetching...' : 'Fetch Product'}
+        </button>
+      </div>
+
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+
+      {/* Modal Pop-up */}
+      {isModalOpenbb && productBySku && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    {/* Modal Content */}
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+      {/* Close Button */}
+      <button
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+        onClick={closeModal}
+      >
+        &times;
+      </button>
+
+      {/* Product Details */}
+      <h2 className="text-xl font-bold mb-4">{productBySku.name}</h2>
+      <p className="text-gray-700 mb-2">{productBySku.description}</p>
+      <p className="text-gray-700 mb-2">Price: ${productBySku?.sellingPrice}</p>
+      <p className="text-gray-700 mb-2">Quantity: {productBySku?.quantity}</p>
+      <p className="text-gray-700 mb-2">Category: {productBySku?.category.name}</p>
+      <p className="text-gray-700 mb-2">
+        Manufacturing Date: {productBySku.manufacturingDate.toString()}
+      </p>
+      <p className="text-gray-700 mb-2">
+        Expiry Date: {productBySku.expiryDate?.toString()}
+      </p>
+      {productBySku.supplier && (
+        <p className="text-gray-700 mb-2">Supplier: {productBySku.supplier.name}</p>
+      )}
+    </div>
+  </div>
+)}
+    </div>
 
       <div className="mb-6 flex items-center justify-between">
         <div className="relative flex-1 max-w-xs">
